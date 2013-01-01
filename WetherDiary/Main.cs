@@ -145,11 +145,16 @@ namespace WetherDiary
                 {
                     // TODO: Allow input only numbers (with decimal and also negative)
                     string fullDate = dtpDate.Value.ToString("yyyy-MM-dd") + " " + dtpTime.Value.ToString("HH:mm");
+                    // debug
+                    MessageBox.Show(Converters.ConvertDateToAccess(fullDate));
+                    // debug end
                     saveCommand = new OleDbCommand(string.Format("UPDATE wether SET Sample_Date = {0}, Temperature = {1}, Pressure = {2}, Cloud_ID = {3}, Wind_ID = {4}, Precipitation_ID = {5}",
                         new object[]
                     {
-                        "#" + fullDate + "#",
-                        // TODO: Replace function for specific control (NumericBox
+
+                        //"#" + fullDate + "#",
+                        Converters.ConvertDateToAccess(fullDate),
+                        // TODO: Replace function for specific control (NumericBox)
                         Converters.ConvertNumbToAccess(tbTemperature.Text),
                         Converters.ConvertNumbToAccess(tbPressure.Text),
                         cbCloud.SelectedValue,

@@ -11,5 +11,10 @@ namespace DBEngine.Access
         {
             return numb != string.Empty ? numb : "NULL";
         }
+
+        public static string ConvertDateToAccess(string date)
+        {
+            return string.Format("#{0}#", date);
+        }
     }
 }
