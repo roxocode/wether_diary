@@ -1,0 +1,5 @@
+C:\My_project\WetherDiary\bin\DBEngine.dll
+C:\My_project\WetherDiary\bin\DBEngine.pdb
+C:\My_project\WetherDiary\DBEngine\obj\Debug\ResolveAssemblyReference.cache
+C:\My_project\WetherDiary\DBEngine\obj\Debug\DBEngine.dll
+C:\My_project\WetherDiary\DBEngine\obj\Debug\DBEngine.pdb

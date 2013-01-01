@@ -1,0 +1,8 @@
+C:\My_project\WetherDiary\bin\WetherDiary.exe
+C:\My_project\WetherDiary\bin\WetherDiary.pdb
+C:\My_project\WetherDiary\WetherDiary\obj\Debug\ResolveAssemblyReference.cache
+C:\My_project\WetherDiary\WetherDiary\obj\Debug\WetherDiary.Properties.Resources.resources
+C:\My_project\WetherDiary\WetherDiary\obj\Debug\WetherDiary.csproj.GenerateResource.Cache
+C:\My_project\WetherDiary\WetherDiary\obj\Debug\WetherDiary.exe
+C:\My_project\WetherDiary\WetherDiary\obj\Debug\WetherDiary.pdb
+C:\My_project\WetherDiary\WetherDiary\obj\Debug\WetherDiary.MainForm.resources

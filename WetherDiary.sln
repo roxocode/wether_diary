@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C# Express 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WetherDiary", "WetherDiary\WetherDiary.csproj", "{CFBC8510-6828-4AD4-8AF4-2C87DFC6355A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBEngine", "DBEngine\DBEngine.csproj", "{A06ED373-FB14-4BBE-B5BD-C5FCD29C684A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWetherDiary", "TestWetherDiary\TestWetherDiary.csproj", "{18857F53-930D-4815-A268-A11BBBCBA2C8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CFBC8510-6828-4AD4-8AF4-2C87DFC6355A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFBC8510-6828-4AD4-8AF4-2C87DFC6355A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFBC8510-6828-4AD4-8AF4-2C87DFC6355A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFBC8510-6828-4AD4-8AF4-2C87DFC6355A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A06ED373-FB14-4BBE-B5BD-C5FCD29C684A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A06ED373-FB14-4BBE-B5BD-C5FCD29C684A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A06ED373-FB14-4BBE-B5BD-C5FCD29C684A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A06ED373-FB14-4BBE-B5BD-C5FCD29C684A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18857F53-930D-4815-A268-A11BBBCBA2C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18857F53-930D-4815-A268-A11BBBCBA2C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18857F53-930D-4815-A268-A11BBBCBA2C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18857F53-930D-4815-A268-A11BBBCBA2C8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

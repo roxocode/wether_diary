@@ -1,0 +1,5 @@
+C:\My_project\WetherDiary\bin\TestWetherDiary.exe
+C:\My_project\WetherDiary\bin\TestWetherDiary.pdb
+C:\My_project\WetherDiary\TestWetherDiary\obj\Release\ResolveAssemblyReference.cache
+C:\My_project\WetherDiary\TestWetherDiary\obj\Release\TestWetherDiary.exe
+C:\My_project\WetherDiary\TestWetherDiary\obj\Release\TestWetherDiary.pdb
