@@ -33,7 +33,7 @@ namespace WetherDiary
             dgvMain.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvMain.AutoGenerateColumns = false;
             dgvMain.EditMode = DataGridViewEditMode.EditOnEnter;
-            dgvMain.AllowUserToAddRows = false;
+            //dgvMain.AllowUserToAddRows = false;
 
             this._engine = new AccessDBEngine();
             // Add columns
@@ -92,7 +92,6 @@ namespace WetherDiary
             precipitationColumn.FlatStyle = FlatStyle.Flat;
             dgvMain.Columns.Add(precipitationColumn);
 
-            DataTable dt = _engine.Test();
             // Fill controls
             cbCloud.DataSource = _engine.ExecuteQuery("SELECT ID, Name FROM cloud");
             cbCloud.DisplayMember = "Name";
@@ -104,8 +103,9 @@ namespace WetherDiary
 
             cbPrecipitation.DataSource = _engine.ExecuteQuery("SELECT * FROM precipitation");
             cbPrecipitation.DisplayMember = "Name";
-            cbWind.ValueMember = "ID";
+            cbPrecipitation.ValueMember = "ID";
 
+            DataTable dt = _engine.Test();
             BindingSource bs = new BindingSource();
             bs.DataSource = dt;
             dgvMain.DataSource = bs;
@@ -116,24 +116,48 @@ namespace WetherDiary
             // Events
             dgvMain.CurrentCellChanged += CellChanged;
             dgvMain.MouseDown += dgvMain_MouseDown;
-            deleteRowItem.Click += deleteRow;     
+            deleteRowItem.Click += deleteRow;
+            dtpTime.ValueChanged += CurrentDateChanged;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            OleDbCommand saveCommand = new OleDbCommand();
+
+            // TODO: Allow input only numbers (with decimal and also negative)
+            string fullDate = dtpDate.Value.ToString("yyyy-MM-dd") + " " + dtpTime.Value.ToString("HH:mm");
+
+            saveCommand = new OleDbCommand(string.Format("INSERT INTO wether (Sample_Date, Temperature, Pressure, Cloud_ID, Wind_ID, Precipitation_ID) VALUES ({0}, {1}, {2}, {3}, {4}, {5})",
+                new object[]
+                {
+                    Converters.ConvertDateToAccess(fullDate),
+                    Converters.ConvertNumbToAccess(tbTemperature.Text),
+                    Converters.ConvertNumbToAccess(tbPressure.Text),
+                    cbCloud.SelectedValue,
+                    cbWind.SelectedValue,
+                    cbPrecipitation.SelectedValue
+                }));           
+
+            this._engine.ExecuteQuery(saveCommand);
+            // TODO: refresh grid
+            //((BindingSource)dgvMain.DataSource).AddNew();
+            
+        }
+
+        /*
+        // Save button action for adding new record and edit existing
+        private void btnSave_Click(object sender, EventArgs e)
+        {
             // FIXME: don't execute query with paremeters
             // Durty fix: replace query without parameters
-            //OleDbCommand saveCommand = new OleDbCommand("INSERT INTO wether (Sample_Date, Sample_Time, Temperature, Pressure, Cloud_ID, Wind_ID, Precipitation_ID) VALUES (#2012-09-20#, #21:55#, 1, 2, 3, 4, 5)");
-            /*
-            OleDbCommand saveCommand = new OleDbCommand("INSERT INTO wether (Sample_Date, Temperature, Pressure, Cloud_ID, Wind_ID, Precipitation_ID) VALUES (?, ?, ?, ?, ?, ?)");
+            //OleDbCommand saveCommand = new OleDbCommand("INSERT INTO wether (Sample_Date, Temperature, Pressure, Cloud_ID, Wind_ID, Precipitation_ID) VALUES (?, ?, ?, ?, ?, ?)");
 
-            saveCommand.Parameters.Add(new OleDbParameter("Sample_Date", "#2012-09-20 00:00:00#"));
-            saveCommand.Parameters.Add(new OleDbParameter("@Temperature", "1"));
-            saveCommand.Parameters.Add(new OleDbParameter("@Pressure", "2"));
-            saveCommand.Parameters.Add(new OleDbParameter("@Cloud_ID", "3"));
-            saveCommand.Parameters.Add(new OleDbParameter("@Wind_ID", "4"));
-            saveCommand.Parameters.Add(new OleDbParameter("@Precipitation_ID", "5"));
-            */
+            //saveCommand.Parameters.Add(new OleDbParameter("Sample_Date", "#2012-09-20 00:00:00#"));
+            //saveCommand.Parameters.Add(new OleDbParameter("@Temperature", "1"));
+            //saveCommand.Parameters.Add(new OleDbParameter("@Pressure", "2"));
+            //saveCommand.Parameters.Add(new OleDbParameter("@Cloud_ID", "3"));
+            //saveCommand.Parameters.Add(new OleDbParameter("@Wind_ID", "4"));
+            //saveCommand.Parameters.Add(new OleDbParameter("@Precipitation_ID", "5"));
             
             OleDbCommand saveCommand = new OleDbCommand();
             
@@ -145,14 +169,11 @@ namespace WetherDiary
                 {
                     // TODO: Allow input only numbers (with decimal and also negative)
                     string fullDate = dtpDate.Value.ToString("yyyy-MM-dd") + " " + dtpTime.Value.ToString("HH:mm");
-                    // debug
-                    MessageBox.Show(Converters.ConvertDateToAccess(fullDate));
-                    // debug end
-                    saveCommand = new OleDbCommand(string.Format("UPDATE wether SET Sample_Date = {0}, Temperature = {1}, Pressure = {2}, Cloud_ID = {3}, Wind_ID = {4}, Precipitation_ID = {5}",
+                    saveCommand = new OleDbCommand(string.Format("UPDATE wether SET Sample_Date = {2}, Temperature = {3}, Pressure = {4}, Cloud_ID = {5}, Wind_ID = {6}, Precipitation_ID = {7} WHERE {0} = {1}",
                         new object[]
                     {
-
-                        //"#" + fullDate + "#",
+                        "ID",
+                        this.ID,
                         Converters.ConvertDateToAccess(fullDate),
                         // TODO: Replace function for specific control (NumericBox)
                         Converters.ConvertNumbToAccess(tbTemperature.Text),
@@ -171,7 +192,9 @@ namespace WetherDiary
             }
 
             this._engine.ExecuteQuery(saveCommand);
+            this.dgvMain.Update();
         }
+        */
 
         /// <summary>
         /// Adopt to row changed
@@ -204,15 +227,17 @@ namespace WetherDiary
         void deleteRow(object sender, EventArgs e)
         {
             int deleteRowIndex = dgvMain.Rows.GetFirstRow(DataGridViewElementStates.Selected);
-            object id = dgvMain.Rows[deleteRowIndex].Cells["ID"].Value;
+            object cellID = dgvMain.Rows[deleteRowIndex].Cells["ID"].Value;
             if (DialogResult.Yes == MessageBox.Show("Удалить запись?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-                if (id != null)
+            {
+                if (cellID != null && cellID != DBNull.Value)
                 {
-                    OleDbCommand deleteCommand = new OleDbCommand(string.Format("DELETE FROM wether WHERE ID = {0}", id));
+                    OleDbCommand deleteCommand = new OleDbCommand(string.Format("DELETE FROM wether WHERE ID = {0}", cellID));
                     //deleteCommand.Parameters.Add(new OleDbParameter("ID", id));
                     this._engine.ExecuteQuery(deleteCommand);
                 }
-            dgvMain.Rows.RemoveAt(deleteRowIndex);
+                dgvMain.Rows.RemoveAt(deleteRowIndex);
+            }
         }
 
         void dgvMain_MouseDown(object sender, MouseEventArgs e)
@@ -220,9 +245,20 @@ namespace WetherDiary
             if (e.Button == MouseButtons.Right)
             {
                 var hti = dgvMain.HitTest(e.X, e.Y);
-                dgvMain.ClearSelection();
-                dgvMain.Rows[hti.RowIndex].Selected = true;
+                if (hti.Type == DataGridViewHitTestType.Cell)
+                {
+                    dgvMain.ClearSelection();
+                    dgvMain.Rows[hti.RowIndex].Selected = true;
+                }
             }
+        }
+
+        /// <summary>
+        /// Change current date
+        /// </summary>
+        void CurrentDateChanged(object sender, EventArgs e)
+        {
+            
         }
     }
 }
