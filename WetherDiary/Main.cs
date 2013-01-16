@@ -122,6 +122,22 @@ namespace WetherDiary
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            //test
+            DataTable wetherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
+            
+            string fullDate = dtpDate.Value.ToString("yyyy-MM-dd") + " " + dtpTime.Value.ToString("HH:mm");
+            DataRow row = wetherTable.NewRow();
+            row["Sample_Date"] = fullDate;
+            row["Temperature"] = tbTemperature.Text;
+            row["Pressure"] = tbPressure.Text;
+            row["Cloud_ID"] = cbCloud.SelectedValue;
+            row["Wind_ID"] = cbWind.SelectedValue;
+            row["Precipitation_ID"] = cbPrecipitation.SelectedValue;
+            wetherTable.Rows.Add(row);
+
+            this._engine.Update(wetherTable);
+
+            /*
             OleDbCommand saveCommand = new OleDbCommand();
 
             // TODO: Allow input only numbers (with decimal and also negative)
@@ -139,9 +155,7 @@ namespace WetherDiary
                 }));           
 
             this._engine.ExecuteQuery(saveCommand);
-            // TODO: refresh grid
-            //((BindingSource)dgvMain.DataSource).AddNew();
-            
+            */
         }
 
         /*

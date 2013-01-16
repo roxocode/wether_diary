@@ -111,6 +111,13 @@ namespace DBEngine
             return res;
         }
 
+        public void Update(DataTable table)
+        {
+            //ToDo: OleDbCommandBuilder or manualy create insert, update, delete query
+            OleDbDataAdapter adapter = new OleDbDataAdapter();
+            adapter.Update(table);
+        }
+
         /*
         /// <summary>
         /// Return query execution
