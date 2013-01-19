@@ -10,6 +10,12 @@ using System.Windows.Forms;
 using DBEngine;
 using DBEngine.Access;
 
+/*
+ * Author: alex
+ * 5 december 2012
+ * TODO: проставить TabIndex
+ * /
+
 namespace WetherDiary
 {
     public partial class MainForm : Form
@@ -33,7 +39,7 @@ namespace WetherDiary
             dgvMain.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvMain.AutoGenerateColumns = false;
             dgvMain.EditMode = DataGridViewEditMode.EditOnEnter;
-            //dgvMain.AllowUserToAddRows = false;
+            dgvMain.AllowUserToAddRows = false;
 
             this._engine = new AccessDBEngine();
             // Add columns
@@ -122,14 +128,14 @@ namespace WetherDiary
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            //test
             DataTable wetherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
-            
+
+
             string fullDate = dtpDate.Value.ToString("yyyy-MM-dd") + " " + dtpTime.Value.ToString("HH:mm");
             DataRow row = wetherTable.NewRow();
             row["Sample_Date"] = fullDate;
-            row["Temperature"] = tbTemperature.Text;
-            row["Pressure"] = tbPressure.Text;
+            row["Temperature"] = Converters.ConvertNumbToAccess(tbTemperature.Text);
+            row["Pressure"] = Converters.ConvertNumbToAccess(tbPressure.Text);
             row["Cloud_ID"] = cbCloud.SelectedValue;
             row["Wind_ID"] = cbWind.SelectedValue;
             row["Precipitation_ID"] = cbPrecipitation.SelectedValue;
@@ -241,6 +247,10 @@ namespace WetherDiary
         void deleteRow(object sender, EventArgs e)
         {
             int deleteRowIndex = dgvMain.Rows.GetFirstRow(DataGridViewElementStates.Selected);
+            if (deleteRowIndex > 0)
+                dgvMain.Rows.RemoveAt(deleteRowIndex);
+            // TODO: !!! attention check 2013.01.17
+            /*
             object cellID = dgvMain.Rows[deleteRowIndex].Cells["ID"].Value;
             if (DialogResult.Yes == MessageBox.Show("Удалить запись?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
@@ -252,6 +262,7 @@ namespace WetherDiary
                 }
                 dgvMain.Rows.RemoveAt(deleteRowIndex);
             }
+            */
         }
 
         void dgvMain_MouseDown(object sender, MouseEventArgs e)

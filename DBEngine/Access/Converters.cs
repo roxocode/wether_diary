@@ -7,9 +7,13 @@ namespace DBEngine.Access
 {
     public class Converters
     {
-        public static string ConvertNumbToAccess(string numb)
+        public static object ConvertNumbToAccess(string numb)
         {
-            return numb != string.Empty ? numb : "NULL";
+            if (numb != string.Empty)
+                return numb;
+            else
+                return DBNull.Value;
+            //return numb != string.Empty ? numb : DBNull.Value;
         }
 
         public static string ConvertDateToAccess(string date)

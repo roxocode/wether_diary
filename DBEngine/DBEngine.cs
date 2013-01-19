@@ -113,9 +113,33 @@ namespace DBEngine
 
         public void Update(DataTable table)
         {
-            //ToDo: OleDbCommandBuilder or manualy create insert, update, delete query
-            OleDbDataAdapter adapter = new OleDbDataAdapter();
-            adapter.Update(table);
+            using (OleDbConnection connection = new OleDbConnection(this.GetConnectionString()))
+            {
+                this._connection = connection;
+                OleDbDataAdapter adapter = new OleDbDataAdapter("SELECT * FROM wether", connection);
+                OleDbCommandBuilder commandBuilder = new OleDbCommandBuilder(adapter);
+                DataTable changedData = table.GetChanges();
+                adapter.RowUpdated += new OleDbRowUpdatedEventHandler(OnRowUpdated);
+
+                try
+                {
+                    adapter.Update(table);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
+
+        private void OnRowUpdated(object sender, OleDbRowUpdatedEventArgs e)
+        {
+            if (e.StatementType == StatementType.Insert)
+            {
+                OleDbCommand cmdNewID = new OleDbCommand("SELECT @@IDENTITY", this._connection);
+                e.Row["ID"] = Convert.ToInt32(cmdNewID.ExecuteScalar());
+                e.Status = UpdateStatus.SkipCurrentRow;
+            }
         }
 
         /*
