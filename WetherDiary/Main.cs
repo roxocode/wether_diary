@@ -14,7 +14,8 @@ using DBEngine.Access;
  * Author: alex
  * 5 december 2012
  * TODO: проставить TabIndex
- * /
+ * TODO: обработка ошибок RowError при редактировании строк (особено для столбца с датой, выпадающий календарь)
+ */
 
 namespace WetherDiary
 {
@@ -52,12 +53,12 @@ namespace WetherDiary
             col.DataPropertyName = "Sample_Date";
             col.Name = "Дата";
             dgvMain.Columns.Add(col);
-
+            /*
             col = new DataGridViewTextBoxColumn();
             col.DataPropertyName = "time";
             col.Name = "Время";
             dgvMain.Columns.Add(col);
-
+            */
             col = new DataGridViewTextBoxColumn();
             col.DataPropertyName = "temperature";
             col.Name = "Температура";
@@ -111,6 +112,13 @@ namespace WetherDiary
             cbPrecipitation.DisplayMember = "Name";
             cbPrecipitation.ValueMember = "ID";
 
+            // Columns color 
+            // TODO: make setting by user
+            dgvMain.Columns[0].DefaultCellStyle.BackColor = Color.Azure;
+            dgvMain.Columns[2].DefaultCellStyle.BackColor = Color.Azure;
+            dgvMain.Columns[4].DefaultCellStyle.BackColor = Color.Azure;
+            dgvMain.Columns[6].DefaultCellStyle.BackColor = Color.Azure;
+
             DataTable dt = _engine.Test();
             BindingSource bs = new BindingSource();
             bs.DataSource = dt;
@@ -124,15 +132,14 @@ namespace WetherDiary
             dgvMain.MouseDown += dgvMain_MouseDown;
             deleteRowItem.Click += deleteRow;
             dtpTime.ValueChanged += CurrentDateChanged;
+            dgvMain.DataError += new DataGridViewDataErrorEventHandler(OnGridDataError);
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void btnAdd_Click(object sender, EventArgs e)
         {
             DataTable wetherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
-
-
-            string fullDate = dtpDate.Value.ToString("yyyy-MM-dd") + " " + dtpTime.Value.ToString("HH:mm");
             DataRow row = wetherTable.NewRow();
+            string fullDate = dtpDate.Value.ToString("yyyy-MM-dd") + " " + dtpTime.Value.ToString("HH:mm");
             row["Sample_Date"] = fullDate;
             row["Temperature"] = Converters.ConvertNumbToAccess(tbTemperature.Text);
             row["Pressure"] = Converters.ConvertNumbToAccess(tbPressure.Text);
@@ -141,27 +148,7 @@ namespace WetherDiary
             row["Precipitation_ID"] = cbPrecipitation.SelectedValue;
             wetherTable.Rows.Add(row);
 
-            this._engine.Update(wetherTable);
-
-            /*
-            OleDbCommand saveCommand = new OleDbCommand();
-
-            // TODO: Allow input only numbers (with decimal and also negative)
-            string fullDate = dtpDate.Value.ToString("yyyy-MM-dd") + " " + dtpTime.Value.ToString("HH:mm");
-
-            saveCommand = new OleDbCommand(string.Format("INSERT INTO wether (Sample_Date, Temperature, Pressure, Cloud_ID, Wind_ID, Precipitation_ID) VALUES ({0}, {1}, {2}, {3}, {4}, {5})",
-                new object[]
-                {
-                    Converters.ConvertDateToAccess(fullDate),
-                    Converters.ConvertNumbToAccess(tbTemperature.Text),
-                    Converters.ConvertNumbToAccess(tbPressure.Text),
-                    cbCloud.SelectedValue,
-                    cbWind.SelectedValue,
-                    cbPrecipitation.SelectedValue
-                }));           
-
-            this._engine.ExecuteQuery(saveCommand);
-            */
+            this.btnSave_Click(sender, EventArgs.Empty);
         }
 
         /*
@@ -247,22 +234,12 @@ namespace WetherDiary
         void deleteRow(object sender, EventArgs e)
         {
             int deleteRowIndex = dgvMain.Rows.GetFirstRow(DataGridViewElementStates.Selected);
-            if (deleteRowIndex > 0)
-                dgvMain.Rows.RemoveAt(deleteRowIndex);
-            // TODO: !!! attention check 2013.01.17
-            /*
-            object cellID = dgvMain.Rows[deleteRowIndex].Cells["ID"].Value;
-            if (DialogResult.Yes == MessageBox.Show("Удалить запись?", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            if (deleteRowIndex > -1)
             {
-                if (cellID != null && cellID != DBNull.Value)
-                {
-                    OleDbCommand deleteCommand = new OleDbCommand(string.Format("DELETE FROM wether WHERE ID = {0}", cellID));
-                    //deleteCommand.Parameters.Add(new OleDbParameter("ID", id));
-                    this._engine.ExecuteQuery(deleteCommand);
-                }
+                DataTable wetherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
                 dgvMain.Rows.RemoveAt(deleteRowIndex);
+                this._engine.Update(wetherTable);
             }
-            */
         }
 
         void dgvMain_MouseDown(object sender, MouseEventArgs e)
@@ -284,6 +261,18 @@ namespace WetherDiary
         void CurrentDateChanged(object sender, EventArgs e)
         {
             
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            DataTable wetherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
+            this._engine.Update(wetherTable);
+
+        }
+
+        private void OnGridDataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            MessageBox.Show("Введенные данные неверны. Проверте правильность данных.\nДля отмены нажмите Esc");
         }
     }
 }

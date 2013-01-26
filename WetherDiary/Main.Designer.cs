@@ -34,7 +34,8 @@
             this.dgvMain = new System.Windows.Forms.DataGridView();
             this.mtbTime = new System.Windows.Forms.MaskedTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnSave = new System.Windows.Forms.Button();
+            this.dtpTime = new System.Windows.Forms.DateTimePicker();
+            this.btnAdd = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -50,7 +51,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.rowMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteRowItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dtpTime = new System.Windows.Forms.DateTimePicker();
+            this.btnSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.rowMenu.SuspendLayout();
@@ -94,7 +95,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.dtpTime);
-            this.groupBox1.Controls.Add(this.btnSave);
+            this.groupBox1.Controls.Add(this.btnAdd);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Controls.Add(this.label7);
@@ -116,15 +117,25 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Характеристики";
             // 
-            // btnSave
+            // dtpTime
             // 
-            this.btnSave.Location = new System.Drawing.Point(473, 138);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(86, 29);
-            this.btnSave.TabIndex = 8;
-            this.btnSave.Text = "Сохранить";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.dtpTime.CustomFormat = "HH:mm";
+            this.dtpTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpTime.Location = new System.Drawing.Point(107, 41);
+            this.dtpTime.Name = "dtpTime";
+            this.dtpTime.ShowUpDown = true;
+            this.dtpTime.Size = new System.Drawing.Size(55, 20);
+            this.dtpTime.TabIndex = 12;
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Location = new System.Drawing.Point(473, 138);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(86, 29);
+            this.btnAdd.TabIndex = 8;
+            this.btnAdd.Text = "Добавить";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // label8
             // 
@@ -250,21 +261,22 @@
             this.deleteRowItem.Size = new System.Drawing.Size(180, 22);
             this.deleteRowItem.Text = "Удалить запись";
             // 
-            // dtpTime
+            // btnSave
             // 
-            this.dtpTime.CustomFormat = "HH:mm";
-            this.dtpTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpTime.Location = new System.Drawing.Point(107, 41);
-            this.dtpTime.Name = "dtpTime";
-            this.dtpTime.ShowUpDown = true;
-            this.dtpTime.Size = new System.Drawing.Size(55, 20);
-            this.dtpTime.TabIndex = 12;
+            this.btnSave.Location = new System.Drawing.Point(513, 8);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 5;
+            this.btnSave.Text = "Сохранить";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 426);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.dgvMain);
             this.Controls.Add(this.label1);
@@ -296,7 +308,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox cbPrecipitation;
         private System.Windows.Forms.Label label8;
@@ -304,6 +316,7 @@
         private System.Windows.Forms.ContextMenuStrip rowMenu;
         private System.Windows.Forms.ToolStripMenuItem deleteRowItem;
         private System.Windows.Forms.DateTimePicker dtpTime;
+        private System.Windows.Forms.Button btnSave;
     }
 }
 

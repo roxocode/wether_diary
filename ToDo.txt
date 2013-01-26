@@ -8,7 +8,7 @@
 Картинки соответствующие погоде
 Сохранение backup'a в хранилище (Google Drive)
 Меню (Справочники, О программе, Выход)
-Add to repository (SVN or GIT)
++ Add to repository (SVN or GIT)
 Add ORM
 иконки на кнопки и приложение
 

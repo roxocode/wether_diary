@@ -118,12 +118,15 @@ namespace DBEngine
                 this._connection = connection;
                 OleDbDataAdapter adapter = new OleDbDataAdapter("SELECT * FROM wether", connection);
                 OleDbCommandBuilder commandBuilder = new OleDbCommandBuilder(adapter);
-                DataTable changedData = table.GetChanges();
+                //DataTable changedData = table.GetChanges();
                 adapter.RowUpdated += new OleDbRowUpdatedEventHandler(OnRowUpdated);
 
                 try
                 {
                     adapter.Update(table);
+                    //adapter.Update(changedData);
+                    //table.Merge(changedData);
+                    //table.AcceptChanges();
                 }
                 catch (Exception ex)
                 {
