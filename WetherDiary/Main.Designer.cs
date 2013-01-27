@@ -52,9 +52,15 @@
             this.rowMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteRowItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnSave = new System.Windows.Forms.Button();
+            this.gbLastMonthTemperature = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.lblMinTemperature = new System.Windows.Forms.Label();
+            this.lblMaxTemperature = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.rowMenu.SuspendLayout();
+            this.gbLastMonthTemperature.SuspendLayout();
             this.SuspendLayout();
             // 
             // dtpDate
@@ -76,7 +82,7 @@
             // dgvMain
             // 
             this.dgvMain.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvMain.Location = new System.Drawing.Point(12, 38);
+            this.dgvMain.Location = new System.Drawing.Point(15, 129);
             this.dgvMain.Name = "dgvMain";
             this.dgvMain.Size = new System.Drawing.Size(576, 189);
             this.dgvMain.TabIndex = 2;
@@ -110,7 +116,7 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.mtbTime);
-            this.groupBox1.Location = new System.Drawing.Point(13, 234);
+            this.groupBox1.Location = new System.Drawing.Point(15, 324);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(575, 183);
             this.groupBox1.TabIndex = 4;
@@ -271,12 +277,61 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // gbLastMonthTemperature
+            // 
+            this.gbLastMonthTemperature.Controls.Add(this.lblMaxTemperature);
+            this.gbLastMonthTemperature.Controls.Add(this.lblMinTemperature);
+            this.gbLastMonthTemperature.Controls.Add(this.label10);
+            this.gbLastMonthTemperature.Controls.Add(this.label9);
+            this.gbLastMonthTemperature.Location = new System.Drawing.Point(15, 35);
+            this.gbLastMonthTemperature.Name = "gbLastMonthTemperature";
+            this.gbLastMonthTemperature.Size = new System.Drawing.Size(241, 88);
+            this.gbLastMonthTemperature.TabIndex = 6;
+            this.gbLastMonthTemperature.TabStop = false;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(7, 20);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(146, 13);
+            this.label9.TabIndex = 0;
+            this.label9.Text = "Минимальная температура";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(7, 50);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(152, 13);
+            this.label10.TabIndex = 0;
+            this.label10.Text = "Максимальная температура";
+            // 
+            // lblMinTemperature
+            // 
+            this.lblMinTemperature.AutoSize = true;
+            this.lblMinTemperature.Location = new System.Drawing.Point(171, 20);
+            this.lblMinTemperature.Name = "lblMinTemperature";
+            this.lblMinTemperature.Size = new System.Drawing.Size(13, 13);
+            this.lblMinTemperature.TabIndex = 1;
+            this.lblMinTemperature.Text = "0";
+            // 
+            // lblMaxTemperature
+            // 
+            this.lblMaxTemperature.AutoSize = true;
+            this.lblMaxTemperature.Location = new System.Drawing.Point(171, 50);
+            this.lblMaxTemperature.Name = "lblMaxTemperature";
+            this.lblMaxTemperature.Size = new System.Drawing.Size(13, 13);
+            this.lblMaxTemperature.TabIndex = 1;
+            this.lblMaxTemperature.Text = "0";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(600, 426);
+            this.ClientSize = new System.Drawing.Size(715, 519);
             this.Controls.Add(this.btnSave);
+            this.Controls.Add(this.gbLastMonthTemperature);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.dgvMain);
             this.Controls.Add(this.label1);
@@ -287,6 +342,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.rowMenu.ResumeLayout(false);
+            this.gbLastMonthTemperature.ResumeLayout(false);
+            this.gbLastMonthTemperature.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -317,6 +374,11 @@
         private System.Windows.Forms.ToolStripMenuItem deleteRowItem;
         private System.Windows.Forms.DateTimePicker dtpTime;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.GroupBox gbLastMonthTemperature;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lblMaxTemperature;
+        private System.Windows.Forms.Label lblMinTemperature;
     }
 }
 

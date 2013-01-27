@@ -111,6 +111,26 @@ namespace DBEngine
             return res;
         }
 
+        public DataRow ExecuteQueryReturnDataRow(OleDbCommand command)
+        {
+            DataTable tmpTable = new DataTable();
+            using (OleDbConnection connection = new OleDbConnection(this.GetConnectionString()))
+            {
+                command.Connection = connection;
+                try
+                {
+                    connection.Open();
+                    OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                    adapter.Fill(tmpTable);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+            return tmpTable.Rows[0];
+        }
+
         public void Update(DataTable table)
         {
             using (OleDbConnection connection = new OleDbConnection(this.GetConnectionString()))

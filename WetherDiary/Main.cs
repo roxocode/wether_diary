@@ -119,6 +119,7 @@ namespace WetherDiary
             dgvMain.Columns[4].DefaultCellStyle.BackColor = Color.Azure;
             dgvMain.Columns[6].DefaultCellStyle.BackColor = Color.Azure;
 
+            // TODO: rewrite
             DataTable dt = _engine.Test();
             BindingSource bs = new BindingSource();
             bs.DataSource = dt;
@@ -131,12 +132,13 @@ namespace WetherDiary
             dgvMain.CurrentCellChanged += CellChanged;
             dgvMain.MouseDown += dgvMain_MouseDown;
             deleteRowItem.Click += deleteRow;
-            dtpTime.ValueChanged += CurrentDateChanged;
+            dtpDate.ValueChanged += CurrentDateChanged;
             dgvMain.DataError += new DataGridViewDataErrorEventHandler(OnGridDataError);
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
+            // TODO: Check for record with the same date (like in dtpDate) and if exist then select record
             DataTable wetherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
             DataRow row = wetherTable.NewRow();
             string fullDate = dtpDate.Value.ToString("yyyy-MM-dd") + " " + dtpTime.Value.ToString("HH:mm");
@@ -260,7 +262,14 @@ namespace WetherDiary
         /// </summary>
         void CurrentDateChanged(object sender, EventArgs e)
         {
-            
+            // TODO: changed for show min, max temerature
+            OleDbCommand temperatureCmd = new OleDbCommand(string.Format("SELECT MAX(Temperature) FROM wether", 
+                new object[] 
+                {
+                    
+                }
+                ));
+            MessageBox.Show(this._engine.ExecuteQueryReturnDataRow(temperatureCmd)[0].ToString());
         }
 
         private void btnSave_Click(object sender, EventArgs e)
