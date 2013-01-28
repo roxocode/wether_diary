@@ -15,3 +15,10 @@ Add ORM
 календарный предыдущий месяц минимальная, максимальная и средняя температуры
 график температуры за последние 30 дней
 цветные столбики
+
+
+SELECT 
+	MIN(Temperature) AS MinTemperature, 
+	MAX(Temperature) AS MaxTemperature 
+FROM wether 
+WHERE MONTH(Sample_Date) = {0} AND YEAR(Sample_Date) = {1}

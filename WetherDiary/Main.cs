@@ -125,6 +125,8 @@ namespace WetherDiary
             bs.DataSource = dt;
             dgvMain.DataSource = bs;
 
+            CurrentDateChanged(this, EventArgs.Empty);
+
             // Context Menu
             dgvMain.ContextMenuStrip = rowMenu;
 
@@ -262,14 +264,21 @@ namespace WetherDiary
         /// </summary>
         void CurrentDateChanged(object sender, EventArgs e)
         {
-            // TODO: changed for show min, max temerature
-            OleDbCommand temperatureCmd = new OleDbCommand(string.Format("SELECT MAX(Temperature) FROM wether", 
+            string sql = @"SELECT 
+	                MIN(Temperature) AS MinTemperature, 
+	                MAX(Temperature) AS MaxTemperature 
+                FROM wether 
+                WHERE MONTH(Sample_Date) = {0} AND YEAR(Sample_Date) = {1}";
+            OleDbCommand temperatureCmd = new OleDbCommand(string.Format(sql, 
                 new object[] 
                 {
-                    
+                    dtpDate.Value.AddMonths(-1).Month,
+                    dtpDate.Value.AddMonths(-1).Year
                 }
                 ));
-            MessageBox.Show(this._engine.ExecuteQueryReturnDataRow(temperatureCmd)[0].ToString());
+            DataRow minMaxTempRow = this._engine.ExecuteQueryReturnDataRow(temperatureCmd);
+            lblMinTemperature.Text = minMaxTempRow[0].ToString();
+            lblMaxTemperature.Text = minMaxTempRow[1].ToString();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
