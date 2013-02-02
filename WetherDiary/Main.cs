@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.OleDb;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using DBEngine;
@@ -26,6 +25,8 @@ namespace WetherDiary
         /// </summary>
         private AccessDBEngine _engine;
 
+        string tableName;
+
         /// <summary>
         /// Ключ записи
         /// </summary>
@@ -42,6 +43,7 @@ namespace WetherDiary
             dgvMain.EditMode = DataGridViewEditMode.EditOnEnter;
             dgvMain.AllowUserToAddRows = false;
 
+            this.tableName = "wether";
             this._engine = new AccessDBEngine();
             // Add columns
             DataGridViewTextBoxColumn col = new DataGridViewTextBoxColumn();
@@ -120,7 +122,8 @@ namespace WetherDiary
             dgvMain.Columns[6].DefaultCellStyle.BackColor = Color.Azure;
 
             // TODO: rewrite
-            DataTable dt = _engine.Test();
+            //DataTable dt = _engine.Test();
+            DataTable dt = _engine.ExecuteQueryReturnDataTable(new OleDbCommand("SELECT * FROM wether"));
             BindingSource bs = new BindingSource();
             bs.DataSource = dt;
             dgvMain.DataSource = bs;
@@ -131,11 +134,23 @@ namespace WetherDiary
             dgvMain.ContextMenuStrip = rowMenu;
 
             // Events
+            // TODO: DialogResult on FormClosing event : read article in 'coding' bookmark folder
             dgvMain.CurrentCellChanged += CellChanged;
             dgvMain.MouseDown += dgvMain_MouseDown;
             deleteRowItem.Click += deleteRow;
             dtpDate.ValueChanged += CurrentDateChanged;
             dgvMain.DataError += new DataGridViewDataErrorEventHandler(OnGridDataError);
+
+            // debug
+            this.DoubleClick += Form_DoubleClick;
+            // debug
+        }
+
+        private void Form_DoubleClick(object sender, EventArgs e)
+        {
+            Book book = new Book("wind");
+            book.ShowDialog();
+            book.Close();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -241,6 +256,7 @@ namespace WetherDiary
             if (deleteRowIndex > -1)
             {
                 DataTable wetherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
+                wetherTable.TableName = this.tableName;
                 dgvMain.Rows.RemoveAt(deleteRowIndex);
                 this._engine.Update(wetherTable);
             }
@@ -284,8 +300,9 @@ namespace WetherDiary
         private void btnSave_Click(object sender, EventArgs e)
         {
             DataTable wetherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
+            wetherTable.TableName = this.tableName;
             this._engine.Update(wetherTable);
-
+            wetherTable.AcceptChanges();
         }
 
         private void OnGridDataError(object sender, DataGridViewDataErrorEventArgs e)

@@ -4,6 +4,10 @@
 4. синхронизация контролов
 5. осадки, примечания
 6. + Review MongoDB
+7. Добавить меню
+8. Сделать справочники
+9. выделение строки правой кнопкой мыши
+10. build increment
 
 Картинки соответствующие погоде
 Сохранение backup'a в хранилище (Google Drive)
@@ -17,8 +21,4 @@ Add ORM
 цветные столбики
 
 
-SELECT 
-	MIN(Temperature) AS MinTemperature, 
-	MAX(Temperature) AS MaxTemperature 
-FROM wether 
-WHERE MONTH(Sample_Date) = {0} AND YEAR(Sample_Date) = {1}
+если добавляем запись с такой же датой но другим временем что делаем? (спрашиваем, добавляем, перезаписываем)

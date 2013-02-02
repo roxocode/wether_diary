@@ -6,3 +6,4 @@ C:\My_project\WetherDiary\WetherDiary\obj\Debug\WetherDiary.csproj.GenerateResou
 C:\My_project\WetherDiary\WetherDiary\obj\Debug\WetherDiary.exe
 C:\My_project\WetherDiary\WetherDiary\obj\Debug\WetherDiary.pdb
 C:\My_project\WetherDiary\WetherDiary\obj\Debug\WetherDiary.MainForm.resources
+C:\My_project\WetherDiary\WetherDiary\obj\Debug\WetherDiary.Book.resources

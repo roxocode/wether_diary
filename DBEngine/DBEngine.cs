@@ -81,6 +81,7 @@ namespace DBEngine
         /// <summary>
         /// Return query execution
         /// </summary>
+        // TODO: refactoring replace for ExecuteQueryReturnDataTable in code
         public DataTable ExecuteQuery(string query)
         {
             Connect();
@@ -111,8 +112,28 @@ namespace DBEngine
             return res;
         }
 
+        public DataTable ExecuteQueryReturnDataTable(OleDbCommand command)
+        {
+            DataTable resTable = new DataTable();
+            using (OleDbConnection connection = new OleDbConnection(this.GetConnectionString()))
+            {
+                command.Connection = connection;
+                try
+                {
+                    OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                    adapter.Fill(resTable);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+            return resTable;
+        }
+
         public DataRow ExecuteQueryReturnDataRow(OleDbCommand command)
         {
+            /*
             DataTable tmpTable = new DataTable();
             using (OleDbConnection connection = new OleDbConnection(this.GetConnectionString()))
             {
@@ -128,7 +149,9 @@ namespace DBEngine
                     throw;
                 }
             }
-            return tmpTable.Rows[0];
+            */
+            DataTable resTable = ExecuteQueryReturnDataTable(command);
+            return resTable.Rows[0];
         }
 
         public void Update(DataTable table)
@@ -136,7 +159,10 @@ namespace DBEngine
             using (OleDbConnection connection = new OleDbConnection(this.GetConnectionString()))
             {
                 this._connection = connection;
-                OleDbDataAdapter adapter = new OleDbDataAdapter("SELECT * FROM wether", connection);
+                //OleDbDataAdapter adapter = new OleDbDataAdapter("SELECT * FROM wether", connection);
+                OleDbDataAdapter adapter = new OleDbDataAdapter(
+                    string.Format("SELECT * FROM {0}", table.TableName), 
+                    connection);
                 OleDbCommandBuilder commandBuilder = new OleDbCommandBuilder(adapter);
                 //DataTable changedData = table.GetChanges();
                 adapter.RowUpdated += new OleDbRowUpdatedEventHandler(OnRowUpdated);
@@ -170,14 +196,6 @@ namespace DBEngine
         /// Return query execution
         /// </summary>
         public OleDbDataReader ExecuteQuery(string query)
-        {
-            //return 
-        }
-
-        /// <summary>
-        /// Return query execution
-        /// </summary>
-        public DataRow ExecuteQuery(string query)
         {
             //return 
         }
