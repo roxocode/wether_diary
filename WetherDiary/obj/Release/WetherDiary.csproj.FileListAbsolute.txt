@@ -1,8 +1,0 @@
-C:\My_project\WetherDiary\bin\WetherDiary.exe
-C:\My_project\WetherDiary\bin\WetherDiary.pdb
-C:\My_project\WetherDiary\WetherDiary\obj\Release\ResolveAssemblyReference.cache
-C:\My_project\WetherDiary\WetherDiary\obj\Release\WetherDiary.Properties.Resources.resources
-C:\My_project\WetherDiary\WetherDiary\obj\Release\WetherDiary.csproj.GenerateResource.Cache
-C:\My_project\WetherDiary\WetherDiary\obj\Release\WetherDiary.exe
-C:\My_project\WetherDiary\WetherDiary\obj\Release\WetherDiary.pdb
-C:\My_project\WetherDiary\WetherDiary\obj\Release\WetherDiary.MainForm.resources
