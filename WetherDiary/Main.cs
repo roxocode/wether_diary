@@ -71,9 +71,9 @@ namespace WetherDiary
             col.Name = "Давление";
             dgvMain.Columns.Add(col);
 
-            // FixMe:
             var cloudColumn = new DataGridViewComboBoxColumn();
-            cloudColumn.DataSource = _engine.ExecuteQuery("SELECT * FROM cloud");
+            BindingSource cloudBindingSource = new BindingSource(_engine.ExecuteQuery("SELECT * FROM cloud"), null);
+            cloudColumn.DataSource = cloudBindingSource;
             cloudColumn.DataPropertyName = "CloudID";
             cloudColumn.DisplayMember = "Name";
             cloudColumn.ValueMember = "ID";
@@ -150,7 +150,7 @@ namespace WetherDiary
         {
             Book book = new Book("wind");
             book.ShowDialog();
-            book.Close();
+            //book.Close();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -308,6 +308,25 @@ namespace WetherDiary
         private void OnGridDataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             MessageBox.Show("Введенные данные неверны. Проверте правильность данных.\nДля отмены нажмите Esc");
+        }
+
+        private void CloudToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // ToDo: test without BindingSource (update combobox after book?)
+            DataGridViewComboBoxColumn cbc = dgvMain.Columns["CloudID"] as DataGridViewComboBoxColumn;
+            DataTable dt = ((cbc.DataSource as BindingSource).DataSource as DataTable);
+            dt.TableName = "cloud";
+            Book cloud = new Book(dt);
+            cloud.ShowDialog();
+            // debug
+            /*
+            DataGridViewComboBoxColumn cbc = dgvMain.Columns["CloudID"] as DataGridViewComboBoxColumn;
+            DataTable dt = ((cbc.DataSource as BindingSource).DataSource as DataTable);
+            dt.Rows.Add(new object[]{123, "hello"});
+            dt.TableName = "cloud";
+            this._engine.Update(dt);
+            */
+            // debug
         }
     }
 }
