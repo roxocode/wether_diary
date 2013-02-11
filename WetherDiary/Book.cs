@@ -18,8 +18,12 @@ namespace WetherDiary
         public Book()
         {
             InitializeComponent();
-        }
+            this.engine = new DBEngine.AccessDBEngine();
 
+            dgvBook.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvBook.AutoGenerateColumns = true;
+        }
+        /*
         public Book(string tableName)
         {
             InitializeComponent();
@@ -38,16 +42,10 @@ namespace WetherDiary
             dgvBook.Columns["Name"].HeaderText = "Наименование";
             dgvBook.Columns["Name"].Width = 250;
         }
+        */
 
-        //ToDo: test constructor with DataTable
-        public Book(DataTable table)
+        public Book(DataTable table) : this()
         {
-            InitializeComponent();
-            this.engine = new DBEngine.AccessDBEngine();
-
-            dgvBook.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvBook.AutoGenerateColumns = true;
-
             BindingSource bs = new BindingSource();
             bs.DataSource = table;
             dgvBook.DataSource = bs;
@@ -59,8 +57,6 @@ namespace WetherDiary
         private void btnSave_Click(object sender, EventArgs e)
         {
             DataTable bookTable = (dgvBook.DataSource as BindingSource).DataSource as DataTable;
-            //bookTable.TableName = this.tableName;
-            //bookTable.TableName = 
             this.engine.Update(bookTable);
             bookTable.AcceptChanges();
             this.Close();

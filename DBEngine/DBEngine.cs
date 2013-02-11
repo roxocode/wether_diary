@@ -17,32 +17,53 @@ namespace DBEngine
 {
     public class AccessDBEngine
     {
+        const string accessProvider = "Microsoft.Jet.Oledb.4.0";
+
+        string DbPath { get; set; }
+        string DbProvider { get; set; }
+        bool DbWindowsAuth { get; set; }
+
         private OleDbConnection _connection;
 
-        public void LoadConnectionFromFile(string path)
+        public AccessDBEngine()
         {
-
+            this.DbProvider = accessProvider;
+            this.DbWindowsAuth = false;
         }
 
-        public void SaveConnectionToFile(string path)
+        public AccessDBEngine(string path) : this()
         {
-            // Save To File
+            this.DbPath = path;
         }
 
         private string GetConnectionString()
         {
             OleDbConnectionStringBuilder builder = new OleDbConnectionStringBuilder();
+            /*
             // Path to file
-            builder.DataSource = "wether.mdb";
+            builder.DataSource = this.DbPath;
             // Provider
-            builder.Provider = "Microsoft.Jet.Oledb.4.0";
+            builder.Provider = this.DbProvider;
             // Authentification: SQL or Windows
             builder.PersistSecurityInfo = false;
+            return builder.ConnectionString;
+            */
+            try
+            {
+                builder.DataSource = this.DbPath;
+                builder.Provider = this.DbProvider;
+                builder.PersistSecurityInfo = this.DbWindowsAuth;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
             return builder.ConnectionString;
         }
 
         public void Connect()
         {
+            /* shit ...
             if (_connection != null && _connection.State != ConnectionState.Closed)
                 return;
 
@@ -67,6 +88,7 @@ namespace DBEngine
                 Console.WriteLine("Some error!");
                 throw e;
             }
+            */
         }
 
         public DataTable Test()
@@ -84,12 +106,15 @@ namespace DBEngine
         // TODO: refactoring replace for ExecuteQueryReturnDataTable in code
         public DataTable ExecuteQuery(string query)
         {
-            Connect();
-            OleDbCommand command = new OleDbCommand(query, _connection);
-            OleDbDataAdapter adapter = new OleDbDataAdapter();
-            adapter.SelectCommand = command;
-            DataTable resTable = new DataTable();
-            adapter.Fill(resTable);
+            DataTable resTable;
+            using (OleDbConnection connection = new OleDbConnection(this.GetConnectionString()))
+            {
+                OleDbCommand command = new OleDbCommand(query, connection);
+                OleDbDataAdapter adapter = new OleDbDataAdapter();
+                adapter.SelectCommand = command;
+                resTable = new DataTable();
+                adapter.Fill(resTable);
+            }
             return resTable;
         }
 
@@ -133,23 +158,6 @@ namespace DBEngine
 
         public DataRow ExecuteQueryReturnDataRow(OleDbCommand command)
         {
-            /*
-            DataTable tmpTable = new DataTable();
-            using (OleDbConnection connection = new OleDbConnection(this.GetConnectionString()))
-            {
-                command.Connection = connection;
-                try
-                {
-                    connection.Open();
-                    OleDbDataAdapter adapter = new OleDbDataAdapter(command);
-                    adapter.Fill(tmpTable);
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-            */
             DataTable resTable = ExecuteQueryReturnDataTable(command);
             return resTable.Rows[0];
         }
@@ -190,15 +198,5 @@ namespace DBEngine
                 e.Status = UpdateStatus.SkipCurrentRow;
             }
         }
-
-        /*
-        /// <summary>
-        /// Return query execution
-        /// </summary>
-        public OleDbDataReader ExecuteQuery(string query)
-        {
-            //return 
-        }
-         */
     }
 }

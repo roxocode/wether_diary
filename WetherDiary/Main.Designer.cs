@@ -53,8 +53,10 @@
             this.deleteRowItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnSave = new System.Windows.Forms.Button();
             this.gbLastMonthTemperature = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.lblMaxTemperature = new System.Windows.Forms.Label();
             this.lblMinTemperature = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -64,8 +66,6 @@
             this.WindToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WindForceВетраToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.rowMenu.SuspendLayout();
@@ -301,6 +301,15 @@
             this.gbLastMonthTemperature.TabIndex = 6;
             this.gbLastMonthTemperature.TabStop = false;
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(171, 65);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(13, 13);
+            this.label12.TabIndex = 1;
+            this.label12.Text = "0";
+            // 
             // lblMaxTemperature
             // 
             this.lblMaxTemperature.AutoSize = true;
@@ -318,6 +327,15 @@
             this.lblMinTemperature.Size = new System.Drawing.Size(13, 13);
             this.lblMinTemperature.TabIndex = 1;
             this.lblMinTemperature.Text = "0";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(7, 65);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(118, 13);
+            this.label11.TabIndex = 0;
+            this.label11.Text = "Средняя температура";
             // 
             // label10
             // 
@@ -362,26 +380,28 @@
             // CloudToolStripMenuItem
             // 
             this.CloudToolStripMenuItem.Name = "CloudToolStripMenuItem";
-            this.CloudToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.CloudToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.CloudToolStripMenuItem.Text = "Облачность";
             this.CloudToolStripMenuItem.Click += new System.EventHandler(this.CloudToolStripMenuItem_Click);
             // 
             // PrecipitationToolStripMenuItem
             // 
             this.PrecipitationToolStripMenuItem.Name = "PrecipitationToolStripMenuItem";
-            this.PrecipitationToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.PrecipitationToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.PrecipitationToolStripMenuItem.Text = "Осадки";
+            this.PrecipitationToolStripMenuItem.Click += new System.EventHandler(this.PrecipitationToolStripMenuItem_Click);
             // 
             // WindToolStripMenuItem
             // 
             this.WindToolStripMenuItem.Name = "WindToolStripMenuItem";
-            this.WindToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.WindToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.WindToolStripMenuItem.Text = "Ветер";
+            this.WindToolStripMenuItem.Click += new System.EventHandler(this.WindToolStripMenuItem_Click);
             // 
             // WindForceВетраToolStripMenuItem
             // 
             this.WindForceВетраToolStripMenuItem.Name = "WindForceВетраToolStripMenuItem";
-            this.WindForceВетраToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.WindForceВетраToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.WindForceВетраToolStripMenuItem.Text = "Сила ветра";
             // 
             // AboutToolStripMenuItem
@@ -389,24 +409,6 @@
             this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
             this.AboutToolStripMenuItem.Size = new System.Drawing.Size(83, 20);
             this.AboutToolStripMenuItem.Text = "О программе";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(7, 65);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(118, 13);
-            this.label11.TabIndex = 0;
-            this.label11.Text = "Средняя температура";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(171, 65);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(13, 13);
-            this.label12.TabIndex = 1;
-            this.label12.Text = "0";
             // 
             // MainForm
             // 

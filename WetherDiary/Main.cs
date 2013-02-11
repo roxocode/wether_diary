@@ -14,6 +14,8 @@ using DBEngine.Access;
  * 5 december 2012
  * TODO: проставить TabIndex
  * TODO: обработка ошибок RowError при редактировании строк (особено для столбца с датой, выпадающий календарь)
+ * TODO: обработка ошибки когда пользователь удаляет запись из справочника которая используется в главной таблице (обработка события DataGridView.DataError)
+ * TODO: возможность ввода доробных чисел в поля Температура и Давление (обработка события DataGridView.DataError)
  */
 
 namespace WetherDiary
@@ -53,32 +55,30 @@ namespace WetherDiary
 
             col = new DataGridViewTextBoxColumn();
             col.DataPropertyName = "Sample_Date";
-            col.Name = "Дата";
+            col.Name = "Sample_Date";
+            col.HeaderText = "Дата";
             dgvMain.Columns.Add(col);
-            /*
-            col = new DataGridViewTextBoxColumn();
-            col.DataPropertyName = "time";
-            col.Name = "Время";
-            dgvMain.Columns.Add(col);
-            */
+
             col = new DataGridViewTextBoxColumn();
             col.DataPropertyName = "temperature";
-            col.Name = "Температура";
+            col.Name = "temperature";
+            col.HeaderText = "Температура";
             dgvMain.Columns.Add(col);
 
             col = new DataGridViewTextBoxColumn();
             col.DataPropertyName = "pressure";
-            col.Name = "Давление";
+            col.Name = "pressure";
+            col.HeaderText = "Давление";
+            col.ValueType = typeof(double);
             dgvMain.Columns.Add(col);
 
             var cloudColumn = new DataGridViewComboBoxColumn();
-            BindingSource cloudBindingSource = new BindingSource(_engine.ExecuteQuery("SELECT * FROM cloud"), null);
-            cloudColumn.DataSource = cloudBindingSource;
+            cloudColumn.DataSource = _engine.ExecuteQuery("SELECT * FROM cloud");
             cloudColumn.DataPropertyName = "CloudID";
+            cloudColumn.Name = "CloudID";
+            cloudColumn.HeaderText = "Облачность";
             cloudColumn.DisplayMember = "Name";
             cloudColumn.ValueMember = "ID";
-            cloudColumn.HeaderText = "Облачность";
-            cloudColumn.Name = "CloudID";
             cloudColumn.ValueType = typeof(string);
             cloudColumn.FlatStyle = FlatStyle.Flat;
             dgvMain.Columns.Add(cloudColumn);
@@ -86,18 +86,20 @@ namespace WetherDiary
             var windColumn = new DataGridViewComboBoxColumn();
             windColumn.DataSource = _engine.ExecuteQuery("SELECT * FROM wind");
             windColumn.DataPropertyName = "Wind_ID";
+            windColumn.Name = "Wind_ID";
+            windColumn.HeaderText = "Ветер";
             windColumn.DisplayMember = "Name";
             windColumn.ValueMember = "ID";
-            windColumn.Name = "Ветер";
             windColumn.FlatStyle = FlatStyle.Flat;
             dgvMain.Columns.Add(windColumn);
 
             var precipitationColumn = new DataGridViewComboBoxColumn();
             precipitationColumn.DataSource = _engine.ExecuteQuery("SELECT * FROM precipitation");
             precipitationColumn.DataPropertyName = "Precipitation_ID";
+            precipitationColumn.Name = "Precipitation_ID";
+            precipitationColumn.HeaderText = "Осадки";
             precipitationColumn.DisplayMember = "Name";
             precipitationColumn.ValueMember = "ID";
-            precipitationColumn.Name = "Осадки";
             precipitationColumn.FlatStyle = FlatStyle.Flat;
             dgvMain.Columns.Add(precipitationColumn);
 
@@ -122,7 +124,6 @@ namespace WetherDiary
             dgvMain.Columns[6].DefaultCellStyle.BackColor = Color.Azure;
 
             // TODO: rewrite
-            //DataTable dt = _engine.Test();
             DataTable dt = _engine.ExecuteQueryReturnDataTable(new OleDbCommand("SELECT * FROM wether"));
             BindingSource bs = new BindingSource();
             bs.DataSource = dt;
@@ -140,17 +141,6 @@ namespace WetherDiary
             deleteRowItem.Click += deleteRow;
             dtpDate.ValueChanged += CurrentDateChanged;
             dgvMain.DataError += new DataGridViewDataErrorEventHandler(OnGridDataError);
-
-            // debug
-            this.DoubleClick += Form_DoubleClick;
-            // debug
-        }
-
-        private void Form_DoubleClick(object sender, EventArgs e)
-        {
-            Book book = new Book("wind");
-            book.ShowDialog();
-            //book.Close();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -169,58 +159,6 @@ namespace WetherDiary
 
             this.btnSave_Click(sender, EventArgs.Empty);
         }
-
-        /*
-        // Save button action for adding new record and edit existing
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            // FIXME: don't execute query with paremeters
-            // Durty fix: replace query without parameters
-            //OleDbCommand saveCommand = new OleDbCommand("INSERT INTO wether (Sample_Date, Temperature, Pressure, Cloud_ID, Wind_ID, Precipitation_ID) VALUES (?, ?, ?, ?, ?, ?)");
-
-            //saveCommand.Parameters.Add(new OleDbParameter("Sample_Date", "#2012-09-20 00:00:00#"));
-            //saveCommand.Parameters.Add(new OleDbParameter("@Temperature", "1"));
-            //saveCommand.Parameters.Add(new OleDbParameter("@Pressure", "2"));
-            //saveCommand.Parameters.Add(new OleDbParameter("@Cloud_ID", "3"));
-            //saveCommand.Parameters.Add(new OleDbParameter("@Wind_ID", "4"));
-            //saveCommand.Parameters.Add(new OleDbParameter("@Precipitation_ID", "5"));
-            
-            OleDbCommand saveCommand = new OleDbCommand();
-            
-            if (this.ID != null)
-            {
-                // Changing record
-                // UPDATE Command
-                if (DialogResult.Yes == MessageBox.Show("", "", MessageBoxButtons.YesNo))
-                {
-                    // TODO: Allow input only numbers (with decimal and also negative)
-                    string fullDate = dtpDate.Value.ToString("yyyy-MM-dd") + " " + dtpTime.Value.ToString("HH:mm");
-                    saveCommand = new OleDbCommand(string.Format("UPDATE wether SET Sample_Date = {2}, Temperature = {3}, Pressure = {4}, Cloud_ID = {5}, Wind_ID = {6}, Precipitation_ID = {7} WHERE {0} = {1}",
-                        new object[]
-                    {
-                        "ID",
-                        this.ID,
-                        Converters.ConvertDateToAccess(fullDate),
-                        // TODO: Replace function for specific control (NumericBox)
-                        Converters.ConvertNumbToAccess(tbTemperature.Text),
-                        Converters.ConvertNumbToAccess(tbPressure.Text),
-                        cbCloud.SelectedValue,
-                        cbWind.SelectedValue,
-                        cbPrecipitation.SelectedValue
-                    }));
-                }
-            }
-            else
-            {
-                // New record
-                // INSERT Command
-                saveCommand = new OleDbCommand("INSERT INTO wether (Sample_Date, Temperature, Pressure, Cloud_ID, Wind_ID, Precipitation_ID) VALUES ({0}, {1}, {2}, {3}, {4}, {5})");
-            }
-
-            this._engine.ExecuteQuery(saveCommand);
-            this.dgvMain.Update();
-        }
-        */
 
         /// <summary>
         /// Adopt to row changed
@@ -310,23 +248,46 @@ namespace WetherDiary
             MessageBox.Show("Введенные данные неверны. Проверте правильность данных.\nДля отмены нажмите Esc");
         }
 
+        /// <summary>
+        /// Справочник - Облачность
+        /// </summary>
         private void CloudToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // ToDo: test without BindingSource (update combobox after book?)
+            // Get DataTable
             DataGridViewComboBoxColumn cbc = dgvMain.Columns["CloudID"] as DataGridViewComboBoxColumn;
-            DataTable dt = ((cbc.DataSource as BindingSource).DataSource as DataTable);
+            DataTable dt = cbc.DataSource as DataTable;
             dt.TableName = "cloud";
             Book cloud = new Book(dt);
+            cloud.Text = "Облачность";
             cloud.ShowDialog();
-            // debug
-            /*
-            DataGridViewComboBoxColumn cbc = dgvMain.Columns["CloudID"] as DataGridViewComboBoxColumn;
-            DataTable dt = ((cbc.DataSource as BindingSource).DataSource as DataTable);
-            dt.Rows.Add(new object[]{123, "hello"});
-            dt.TableName = "cloud";
-            this._engine.Update(dt);
-            */
-            // debug
+        }
+
+        /// <summary>
+        /// Справочник - Осадки
+        /// </summary>
+        private void PrecipitationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get DataTable
+            DataGridViewComboBoxColumn cbc = dgvMain.Columns["Precipitation_ID"] as DataGridViewComboBoxColumn;
+            DataTable dt = cbc.DataSource as DataTable;
+            dt.TableName = "precipitation";
+            Book precipitation = new Book(dt);
+            precipitation.Text = "Осадки";
+            precipitation.ShowDialog();
+        }
+
+        /// <summary>
+        /// Справочник - Направление ветера
+        /// </summary>
+        private void WindToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get DataTable
+            DataGridViewComboBoxColumn cbc = dgvMain.Columns["Wind_ID"] as DataGridViewComboBoxColumn;
+            DataTable dt = cbc.DataSource as DataTable;
+            dt.TableName = "wind";
+            Book precipitation = new Book(dt);
+            precipitation.Text = "Ветер";
+            precipitation.ShowDialog();
         }
     }
 }
