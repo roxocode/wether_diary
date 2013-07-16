@@ -53,7 +53,7 @@
             this.deleteRowItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnSave = new System.Windows.Forms.Button();
             this.gbLastMonthTemperature = new System.Windows.Forms.GroupBox();
-            this.label12 = new System.Windows.Forms.Label();
+            this.lblAvgTemperature = new System.Windows.Forms.Label();
             this.lblMaxTemperature = new System.Windows.Forms.Label();
             this.lblMinTemperature = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -66,11 +66,16 @@
             this.WindToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WindForceВетраToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.dgvYearsDays = new System.Windows.Forms.DataGridView();
+            this.btnAddTest = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.rowMenu.SuspendLayout();
             this.gbLastMonthTemperature.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvYearsDays)).BeginInit();
             this.SuspendLayout();
             // 
             // dtpDate
@@ -132,6 +137,7 @@
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Характеристики";
+            this.groupBox1.Visible = false;
             // 
             // dtpTime
             // 
@@ -279,7 +285,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(509, 43);
+            this.btnSave.Location = new System.Drawing.Point(516, 43);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 5;
@@ -289,7 +295,7 @@
             // 
             // gbLastMonthTemperature
             // 
-            this.gbLastMonthTemperature.Controls.Add(this.label12);
+            this.gbLastMonthTemperature.Controls.Add(this.lblAvgTemperature);
             this.gbLastMonthTemperature.Controls.Add(this.lblMaxTemperature);
             this.gbLastMonthTemperature.Controls.Add(this.lblMinTemperature);
             this.gbLastMonthTemperature.Controls.Add(this.label11);
@@ -301,14 +307,14 @@
             this.gbLastMonthTemperature.TabIndex = 6;
             this.gbLastMonthTemperature.TabStop = false;
             // 
-            // label12
+            // lblAvgTemperature
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(171, 65);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(13, 13);
-            this.label12.TabIndex = 1;
-            this.label12.Text = "0";
+            this.lblAvgTemperature.AutoSize = true;
+            this.lblAvgTemperature.Location = new System.Drawing.Point(171, 65);
+            this.lblAvgTemperature.Name = "lblAvgTemperature";
+            this.lblAvgTemperature.Size = new System.Drawing.Size(13, 13);
+            this.lblAvgTemperature.TabIndex = 1;
+            this.lblAvgTemperature.Text = "0";
             // 
             // lblMaxTemperature
             // 
@@ -380,28 +386,28 @@
             // CloudToolStripMenuItem
             // 
             this.CloudToolStripMenuItem.Name = "CloudToolStripMenuItem";
-            this.CloudToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.CloudToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.CloudToolStripMenuItem.Text = "Облачность";
             this.CloudToolStripMenuItem.Click += new System.EventHandler(this.CloudToolStripMenuItem_Click);
             // 
             // PrecipitationToolStripMenuItem
             // 
             this.PrecipitationToolStripMenuItem.Name = "PrecipitationToolStripMenuItem";
-            this.PrecipitationToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.PrecipitationToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.PrecipitationToolStripMenuItem.Text = "Осадки";
-            this.PrecipitationToolStripMenuItem.Click += new System.EventHandler(this.PrecipitationToolStripMenuItem_Click);
+            this.PrecipitationToolStripMenuItem.Click += new System.EventHandler(this.FalloutToolStripMenuItem_Click);
             // 
             // WindToolStripMenuItem
             // 
             this.WindToolStripMenuItem.Name = "WindToolStripMenuItem";
-            this.WindToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.WindToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.WindToolStripMenuItem.Text = "Ветер";
             this.WindToolStripMenuItem.Click += new System.EventHandler(this.WindToolStripMenuItem_Click);
             // 
             // WindForceВетраToolStripMenuItem
             // 
             this.WindForceВетраToolStripMenuItem.Name = "WindForceВетраToolStripMenuItem";
-            this.WindForceВетраToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.WindForceВетраToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.WindForceВетраToolStripMenuItem.Text = "Сила ветра";
             // 
             // AboutToolStripMenuItem
@@ -410,17 +416,48 @@
             this.AboutToolStripMenuItem.Size = new System.Drawing.Size(83, 20);
             this.AboutToolStripMenuItem.Text = "О программе";
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.dgvYearsDays);
+            this.groupBox2.Location = new System.Drawing.Point(240, 67);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(245, 100);
+            this.groupBox2.TabIndex = 8;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Аналогия по годам";
+            // 
+            // dgvYearsDays
+            // 
+            this.dgvYearsDays.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvYearsDays.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvYearsDays.Location = new System.Drawing.Point(3, 16);
+            this.dgvYearsDays.Name = "dgvYearsDays";
+            this.dgvYearsDays.Size = new System.Drawing.Size(239, 81);
+            this.dgvYearsDays.TabIndex = 0;
+            // 
+            // btnAddTest
+            // 
+            this.btnAddTest.Location = new System.Drawing.Point(516, 141);
+            this.btnAddTest.Name = "btnAddTest";
+            this.btnAddTest.Size = new System.Drawing.Size(75, 23);
+            this.btnAddTest.TabIndex = 9;
+            this.btnAddTest.Text = "Добавить";
+            this.btnAddTest.UseVisualStyleBackColor = true;
+            this.btnAddTest.Click += new System.EventHandler(this.btnAddTest_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(715, 555);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.btnAddTest);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.gbLastMonthTemperature);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.dgvMain);
-            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.dtpDate);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.label1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
@@ -433,6 +470,8 @@
             this.gbLastMonthTemperature.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvYearsDays)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -475,8 +514,11 @@
         private System.Windows.Forms.ToolStripMenuItem PrecipitationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem WindToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem WindForceВетраToolStripMenuItem;
-        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label lblAvgTemperature;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.DataGridView dgvYearsDays;
+        private System.Windows.Forms.Button btnAddTest;
     }
 }
 

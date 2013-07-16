@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WetherDiary", "WetherDiary\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBEngine", "DBEngine\DBEngine.csproj", "{A06ED373-FB14-4BBE-B5BD-C5FCD29C684A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWetherDiary", "TestWetherDiary\TestWetherDiary.csproj", "{18857F53-930D-4815-A268-A11BBBCBA2C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WetherImporter", "WetherImporter\WetherImporter\WetherImporter.csproj", "{E7EAA5E3-39B4-4C63-B1A6-716CF4F5F9B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,10 @@ Global
 		{A06ED373-FB14-4BBE-B5BD-C5FCD29C684A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A06ED373-FB14-4BBE-B5BD-C5FCD29C684A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A06ED373-FB14-4BBE-B5BD-C5FCD29C684A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{18857F53-930D-4815-A268-A11BBBCBA2C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{18857F53-930D-4815-A268-A11BBBCBA2C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{18857F53-930D-4815-A268-A11BBBCBA2C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{18857F53-930D-4815-A268-A11BBBCBA2C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7EAA5E3-39B4-4C63-B1A6-716CF4F5F9B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7EAA5E3-39B4-4C63-B1A6-716CF4F5F9B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7EAA5E3-39B4-4C63-B1A6-716CF4F5F9B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7EAA5E3-39B4-4C63-B1A6-716CF4F5F9B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

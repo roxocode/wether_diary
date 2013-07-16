@@ -99,24 +99,6 @@ namespace DBEngine
             Console.WriteLine("Row quantity: " + adapter.Fill(dt).ToString());
             return dt;
         }
-        
-        /// <summary>
-        /// Return query execution
-        /// </summary>
-        // TODO: refactoring replace for ExecuteQueryReturnDataTable in code
-        public DataTable ExecuteQuery(string query)
-        {
-            DataTable resTable;
-            using (OleDbConnection connection = new OleDbConnection(this.GetConnectionString()))
-            {
-                OleDbCommand command = new OleDbCommand(query, connection);
-                OleDbDataAdapter adapter = new OleDbDataAdapter();
-                adapter.SelectCommand = command;
-                resTable = new DataTable();
-                adapter.Fill(resTable);
-            }
-            return resTable;
-        }
 
         public int ExecuteQuery(OleDbCommand command)
         {
@@ -128,6 +110,31 @@ namespace DBEngine
                 {
                     connection.Open();
                     res = command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+            return res;
+        }
+
+        /// <summary>
+        /// Execute query and return identity
+        /// </summary>
+        public object ExecuteQueryReturnID(OleDbCommand command)
+        {
+            object res = null;
+            using (OleDbConnection connection = new OleDbConnection(this.GetConnectionString()))
+            {
+                command.Connection = connection;
+                try
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    // Get row id
+                    OleDbCommand id = new OleDbCommand("SELECT @@IDENTITY", connection);
+                    res = id.ExecuteScalar();
                 }
                 catch (Exception ex)
                 {

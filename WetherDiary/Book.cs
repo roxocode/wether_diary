@@ -18,7 +18,7 @@ namespace WetherDiary
         public Book()
         {
             InitializeComponent();
-            this.engine = new DBEngine.AccessDBEngine();
+            this.engine = new DBEngine.AccessDBEngine("wether.mdb");
 
             dgvBook.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvBook.AutoGenerateColumns = true;
