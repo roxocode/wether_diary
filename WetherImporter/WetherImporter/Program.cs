@@ -3,18 +3,122 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Data;
-using System.Data.OleDb;
+using System.Data.SQLite;
 using DBEngine;
-using Excel = Microsoft.Office.Interop.Excel;
+using ExcelLibrary.SpreadSheet;
+
 
 
 namespace WetherImporter
 {
     class Program
     {
+        static void importData()
+        {
+            string file = "weather.xls";
+            SQLiteDBEngine engine = new SQLiteDBEngine("weather.s3db");
+
+            // Count of used rows
+            int rowStart = 2;
+            int rowEnd = 2357;
+
+            DateTime? dateMes = null;
+            string timeMes = null;
+            object tempMes = null;
+            object pressureMes = null;
+            object falloutMes = null;
+
+            Console.WriteLine("====== --- Wether Importer --- =====");
+            
+            Console.WriteLine(System.IO.Directory.GetCurrentDirectory());
+            Workbook book = Workbook.Load(file);
+            Worksheet sheet = book.Worksheets[0];
+            
+            for (int rowIndex = rowStart; rowIndex <= rowEnd; rowIndex++)
+            {
+                Row row = sheet.Cells.GetRow(rowIndex);
+                
+                // Date
+                dateMes = row.GetCell(0).DateTimeValue;
+                // Time
+                // 2 вида времени: одна цифра "10" или в формате "hh:mm:ss" например "9:30"
+                Cell timeCell = row.GetCell(1);
+                if (timeCell.Format.FormatType == CellFormatType.Time)
+                    timeMes = timeCell.DateTimeValue.ToString("HH:mm");
+                else
+                    timeMes = timeCell.StringValue;
+
+                // Temperature
+                tempMes = row.GetCell(2).StringValue;
+                // Pressure
+                pressureMes = row.GetCell(3).StringValue;
+                // Fallout
+                falloutMes = row.GetCell(4).StringValue;
+
+                // Parse time column
+                DateTime fullDateTime;
+                string[] timeParts = timeMes.ToString().Split(':');
+                if (timeParts.Length == 2)
+                    fullDateTime = new DateTime(dateMes.Value.Year, dateMes.Value.Month, dateMes.Value.Day, Convert.ToInt16(timeParts[0]), Convert.ToInt16(timeParts[1]), 0);
+                else if (timeParts.Length == 1)
+                    fullDateTime = new DateTime(dateMes.Value.Year, dateMes.Value.Month, dateMes.Value.Day, Convert.ToInt16(timeParts[0]), 0, 0);
+                else
+                    fullDateTime = new DateTime(dateMes.Value.Year, dateMes.Value.Month, dateMes.Value.Day, 0, 0, 0);
+                
+                //Console.WriteLine(fullDateTime.ToString());
+                
+                string sql = string.Format("INSERT INTO weather (Measure_Date, Temperature, Pressure, Cloud_ID, Wind_ID) VALUES ({0}, {1}, {2}, {3}, {4})",
+                    new object[] {
+                            // TODO: 2013-11-08 how to save datetime to database
+                            string.Format("'{0}'", fullDateTime.ToString("yyyy-MM-dd HH:mm")),
+                            //fullDateTime.ToString(),
+                            tempMes,
+                            pressureMes,
+                            "NULL",
+                            "NULL"
+                        });
+
+                object id = engine.ExecuteQueryReturnID(new SQLiteCommand(sql));
+
+                Console.WriteLine(id.ToString());
+                
+                if (id != null && falloutMes != null)
+                {
+                    // Write fallouts
+                    string fallouts = Convert.ToString(falloutMes);
+                    string falloutSql = string.Empty;
+                    if (fallouts.Contains("дождь"))
+                    {
+                        falloutSql = string.Format("INSERT INTO fallouts (Measure_ID, Fallout_ID) VALUES ({0}, {1})", id, 8);
+                        engine.ExecuteQuery(new SQLiteCommand(falloutSql));
+                    }
+                    if (fallouts.Contains("снег"))
+                    {
+                        falloutSql = string.Format("INSERT INTO fallouts (Measure_ID, Fallout_ID) VALUES ({0}, {1})", id, 9);
+                        engine.ExecuteQuery(new SQLiteCommand(falloutSql));
+                    }
+                    if (fallouts.Contains("гроза"))
+                    {
+                        falloutSql = string.Format("INSERT INTO fallouts (Measure_ID, Fallout_ID) VALUES ({0}, {1})", id, 11);
+                        engine.ExecuteQuery(new SQLiteCommand(falloutSql));
+                    }
+                }
+                
+                if (dateMes == null || timeMes == null || pressureMes == null)
+                    Console.WriteLine(rowIndex.ToString());
+
+                //Console.SetCursorPosition(0, Console.CursorTop);
+                //Console.Write(rowIndex.ToString());
+            }
+        }
+
         static void Main(string[] args)
         {
-            AccessDBEngine engine = new AccessDBEngine("wether.mdb");
+            importData();
+
+            /*
+
+            SQLiteDBEngine engine = new SQLiteDBEngine("weather.s3db");
 
             // Count of used rows
             int rowStart = 3;
@@ -75,7 +179,7 @@ namespace WetherImporter
                             "NULL",
                             "NULL"
                         });
-                    object id = engine.ExecuteQueryReturnID(new OleDbCommand(sql));
+                    object id = engine.ExecuteQueryReturnID(new SQLiteCommand(sql));
 
                     if (id != null && falloutMes != null)
                     {
@@ -85,17 +189,17 @@ namespace WetherImporter
                         if (fallouts.Contains("дождь"))
                         {
                             falloutSql = string.Format("INSERT INTO fallouts (Measure_ID, Fallout_ID) VALUES ({0}, {1})", id, 1);
-                            engine.ExecuteQuery(new OleDbCommand(falloutSql));
+                            engine.ExecuteQuery(new SQLiteCommand(falloutSql));
                         }
                         if (fallouts.Contains("снег"))
                         {
                             falloutSql = string.Format("INSERT INTO fallouts (Measure_ID, Fallout_ID) VALUES ({0}, {1})", id, 2);
-                            engine.ExecuteQuery(new OleDbCommand(falloutSql));
+                            engine.ExecuteQuery(new SQLiteCommand(falloutSql));
                         }
                         if (fallouts.Contains("гроза"))
                         {
                             falloutSql = string.Format("INSERT INTO fallouts (Measure_ID, Fallout_ID) VALUES ({0}, {1})", id, 3);
-                            engine.ExecuteQuery(new OleDbCommand(falloutSql));
+                            engine.ExecuteQuery(new SQLiteCommand(falloutSql));
                         }
                     }
 
@@ -122,6 +226,8 @@ namespace WetherImporter
                 xlWorksheet = null;
                 xlWorkbook = null;
             }
+            */
+            Console.Write("Press any key...");
             Console.ReadKey();
         }
     }

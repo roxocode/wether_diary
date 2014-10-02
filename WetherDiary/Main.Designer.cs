@@ -32,23 +32,6 @@
             this.dtpDate = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.dgvMain = new System.Windows.Forms.DataGridView();
-            this.mtbTime = new System.Windows.Forms.MaskedTextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.dtpTime = new System.Windows.Forms.DateTimePicker();
-            this.btnAdd = new System.Windows.Forms.Button();
-            this.label8 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.cbPrecipitation = new System.Windows.Forms.ComboBox();
-            this.cbWind = new System.Windows.Forms.ComboBox();
-            this.cbCloud = new System.Windows.Forms.ComboBox();
-            this.tbPressure = new System.Windows.Forms.TextBox();
-            this.tbTemperature = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.rowMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteRowItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnSave = new System.Windows.Forms.Button();
@@ -64,13 +47,25 @@
             this.CloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PrecipitationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WindToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.WindForceВетраToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.WindForceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dgvYearsDays = new System.Windows.Forms.DataGridView();
             this.btnAddTest = new System.Windows.Forms.Button();
+            this.cbChartPeriod = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.dtpChrPeriodFrom = new System.Windows.Forms.DateTimePicker();
+            this.dtpChrPeriodTo = new System.Windows.Forms.DateTimePicker();
+            this.lblChrPeriodFrom = new System.Windows.Forms.Label();
+            this.lblChrPeriodTo = new System.Windows.Forms.Label();
+            this.clbCharts = new System.Windows.Forms.CheckedListBox();
+            this.lblMesPeriodTo = new System.Windows.Forms.Label();
+            this.lblMesPeriodFrom = new System.Windows.Forms.Label();
+            this.dtpMesPeriodTo = new System.Windows.Forms.DateTimePicker();
+            this.dtpMesPeriodFrom = new System.Windows.Forms.DateTimePicker();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cbMeasurePeriods = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
-            this.groupBox1.SuspendLayout();
             this.rowMenu.SuspendLayout();
             this.gbLastMonthTemperature.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -88,199 +83,31 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(20, 48);
+            this.label1.Location = new System.Drawing.Point(17, 48);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(33, 13);
+            this.label1.Size = new System.Drawing.Size(36, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Дата";
+            this.label1.Text = "Дата:";
             // 
             // dgvMain
             // 
             this.dgvMain.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvMain.Location = new System.Drawing.Point(15, 173);
+            this.dgvMain.Location = new System.Drawing.Point(15, 402);
             this.dgvMain.Name = "dgvMain";
-            this.dgvMain.Size = new System.Drawing.Size(576, 189);
+            this.dgvMain.Size = new System.Drawing.Size(729, 169);
             this.dgvMain.TabIndex = 2;
-            // 
-            // mtbTime
-            // 
-            this.mtbTime.Location = new System.Drawing.Point(107, 29);
-            this.mtbTime.Mask = "00:00";
-            this.mtbTime.Name = "mtbTime";
-            this.mtbTime.PromptChar = ' ';
-            this.mtbTime.Size = new System.Drawing.Size(39, 20);
-            this.mtbTime.TabIndex = 3;
-            this.mtbTime.ValidatingType = typeof(System.DateTime);
-            this.mtbTime.Visible = false;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.dtpTime);
-            this.groupBox1.Controls.Add(this.btnAdd);
-            this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Controls.Add(this.label7);
-            this.groupBox1.Controls.Add(this.cbPrecipitation);
-            this.groupBox1.Controls.Add(this.cbWind);
-            this.groupBox1.Controls.Add(this.cbCloud);
-            this.groupBox1.Controls.Add(this.tbPressure);
-            this.groupBox1.Controls.Add(this.tbTemperature);
-            this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.mtbTime);
-            this.groupBox1.Location = new System.Drawing.Point(15, 368);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(575, 175);
-            this.groupBox1.TabIndex = 4;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Характеристики";
-            this.groupBox1.Visible = false;
-            // 
-            // dtpTime
-            // 
-            this.dtpTime.CustomFormat = "HH:mm";
-            this.dtpTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpTime.Location = new System.Drawing.Point(107, 29);
-            this.dtpTime.Name = "dtpTime";
-            this.dtpTime.ShowUpDown = true;
-            this.dtpTime.Size = new System.Drawing.Size(55, 20);
-            this.dtpTime.TabIndex = 12;
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Location = new System.Drawing.Point(473, 126);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(86, 29);
-            this.btnAdd.TabIndex = 8;
-            this.btnAdd.Text = "Добавить";
-            this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(19, 111);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(70, 13);
-            this.label8.TabIndex = 11;
-            this.label8.Text = "Примечание";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(107, 108);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(192, 57);
-            this.textBox1.TabIndex = 10;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(330, 85);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(45, 13);
-            this.label7.TabIndex = 9;
-            this.label7.Text = "Осадки";
-            // 
-            // cbPrecipitation
-            // 
-            this.cbPrecipitation.FormattingEnabled = true;
-            this.cbPrecipitation.Location = new System.Drawing.Point(418, 82);
-            this.cbPrecipitation.Name = "cbPrecipitation";
-            this.cbPrecipitation.Size = new System.Drawing.Size(151, 21);
-            this.cbPrecipitation.TabIndex = 8;
-            // 
-            // cbWind
-            // 
-            this.cbWind.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbWind.FormattingEnabled = true;
-            this.cbWind.Location = new System.Drawing.Point(418, 56);
-            this.cbWind.Name = "cbWind";
-            this.cbWind.Size = new System.Drawing.Size(151, 21);
-            this.cbWind.TabIndex = 7;
-            // 
-            // cbCloud
-            // 
-            this.cbCloud.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbCloud.FormattingEnabled = true;
-            this.cbCloud.Location = new System.Drawing.Point(418, 28);
-            this.cbCloud.Name = "cbCloud";
-            this.cbCloud.Size = new System.Drawing.Size(151, 21);
-            this.cbCloud.TabIndex = 7;
-            // 
-            // tbPressure
-            // 
-            this.tbPressure.Location = new System.Drawing.Point(107, 82);
-            this.tbPressure.Name = "tbPressure";
-            this.tbPressure.Size = new System.Drawing.Size(55, 20);
-            this.tbPressure.TabIndex = 6;
-            // 
-            // tbTemperature
-            // 
-            this.tbTemperature.Location = new System.Drawing.Point(107, 56);
-            this.tbTemperature.Name = "tbTemperature";
-            this.tbTemperature.Size = new System.Drawing.Size(55, 20);
-            this.tbTemperature.TabIndex = 6;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(330, 59);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(37, 13);
-            this.label6.TabIndex = 5;
-            this.label6.Text = "Ветер";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(330, 31);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(67, 13);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "Облачность";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(19, 85);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(58, 13);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Давление";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(19, 59);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(74, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Температура";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(19, 32);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(40, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Время";
             // 
             // rowMenu
             // 
             this.rowMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.deleteRowItem});
             this.rowMenu.Name = "rowMenu";
-            this.rowMenu.Size = new System.Drawing.Size(167, 26);
+            this.rowMenu.Size = new System.Drawing.Size(159, 26);
             // 
             // deleteRowItem
             // 
             this.deleteRowItem.Name = "deleteRowItem";
-            this.deleteRowItem.Size = new System.Drawing.Size(166, 22);
+            this.deleteRowItem.Size = new System.Drawing.Size(158, 22);
             this.deleteRowItem.Text = "Удалить запись";
             // 
             // btnSave
@@ -303,7 +130,7 @@
             this.gbLastMonthTemperature.Controls.Add(this.label9);
             this.gbLastMonthTemperature.Location = new System.Drawing.Point(15, 79);
             this.gbLastMonthTemperature.Name = "gbLastMonthTemperature";
-            this.gbLastMonthTemperature.Size = new System.Drawing.Size(219, 88);
+            this.gbLastMonthTemperature.Size = new System.Drawing.Size(219, 100);
             this.gbLastMonthTemperature.TabIndex = 6;
             this.gbLastMonthTemperature.TabStop = false;
             // 
@@ -368,60 +195,61 @@
             this.AboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(715, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(756, 24);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // BooksToolStripMenuItem
             // 
             this.BooksToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CloudToolStripMenuItem,
             this.PrecipitationToolStripMenuItem,
+            this.CloudToolStripMenuItem,
             this.WindToolStripMenuItem,
-            this.WindForceВетраToolStripMenuItem});
+            this.WindForceToolStripMenuItem});
             this.BooksToolStripMenuItem.Name = "BooksToolStripMenuItem";
-            this.BooksToolStripMenuItem.Size = new System.Drawing.Size(86, 20);
+            this.BooksToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
             this.BooksToolStripMenuItem.Text = "Справочники";
             // 
             // CloudToolStripMenuItem
             // 
             this.CloudToolStripMenuItem.Name = "CloudToolStripMenuItem";
-            this.CloudToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.CloudToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.CloudToolStripMenuItem.Text = "Облачность";
             this.CloudToolStripMenuItem.Click += new System.EventHandler(this.CloudToolStripMenuItem_Click);
             // 
             // PrecipitationToolStripMenuItem
             // 
             this.PrecipitationToolStripMenuItem.Name = "PrecipitationToolStripMenuItem";
-            this.PrecipitationToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.PrecipitationToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.PrecipitationToolStripMenuItem.Text = "Осадки";
             this.PrecipitationToolStripMenuItem.Click += new System.EventHandler(this.FalloutToolStripMenuItem_Click);
             // 
             // WindToolStripMenuItem
             // 
             this.WindToolStripMenuItem.Name = "WindToolStripMenuItem";
-            this.WindToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.WindToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.WindToolStripMenuItem.Text = "Ветер";
             this.WindToolStripMenuItem.Click += new System.EventHandler(this.WindToolStripMenuItem_Click);
             // 
-            // WindForceВетраToolStripMenuItem
+            // WindForceToolStripMenuItem
             // 
-            this.WindForceВетраToolStripMenuItem.Name = "WindForceВетраToolStripMenuItem";
-            this.WindForceВетраToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-            this.WindForceВетраToolStripMenuItem.Text = "Сила ветра";
+            this.WindForceToolStripMenuItem.Name = "WindForceToolStripMenuItem";
+            this.WindForceToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.WindForceToolStripMenuItem.Text = "Сила ветра";
+            this.WindForceToolStripMenuItem.Click += new System.EventHandler(this.WindForceToolStripMenuItem_Click);
             // 
             // AboutToolStripMenuItem
             // 
             this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
-            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(83, 20);
+            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
             this.AboutToolStripMenuItem.Text = "О программе";
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.dgvYearsDays);
-            this.groupBox2.Location = new System.Drawing.Point(240, 67);
+            this.groupBox2.Location = new System.Drawing.Point(240, 27);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(245, 100);
+            this.groupBox2.Size = new System.Drawing.Size(221, 155);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Аналогия по годам";
@@ -432,7 +260,7 @@
             this.dgvYearsDays.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvYearsDays.Location = new System.Drawing.Point(3, 16);
             this.dgvYearsDays.Name = "dgvYearsDays";
-            this.dgvYearsDays.Size = new System.Drawing.Size(239, 81);
+            this.dgvYearsDays.Size = new System.Drawing.Size(215, 136);
             this.dgvYearsDays.TabIndex = 0;
             // 
             // btnAddTest
@@ -443,28 +271,148 @@
             this.btnAddTest.TabIndex = 9;
             this.btnAddTest.Text = "Добавить";
             this.btnAddTest.UseVisualStyleBackColor = true;
-            this.btnAddTest.Click += new System.EventHandler(this.btnAddTest_Click);
+            this.btnAddTest.Click += new System.EventHandler(this.btnAddMeasure_Click);
+            // 
+            // cbChartPeriod
+            // 
+            this.cbChartPeriod.FormattingEnabled = true;
+            this.cbChartPeriod.Location = new System.Drawing.Point(113, 187);
+            this.cbChartPeriod.Name = "cbChartPeriod";
+            this.cbChartPeriod.Size = new System.Drawing.Size(121, 21);
+            this.cbChartPeriod.TabIndex = 11;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(59, 194);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(48, 13);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Период:";
+            // 
+            // dtpChrPeriodFrom
+            // 
+            this.dtpChrPeriodFrom.Location = new System.Drawing.Point(356, 188);
+            this.dtpChrPeriodFrom.Name = "dtpChrPeriodFrom";
+            this.dtpChrPeriodFrom.Size = new System.Drawing.Size(102, 20);
+            this.dtpChrPeriodFrom.TabIndex = 13;
+            // 
+            // dtpChrPeriodTo
+            // 
+            this.dtpChrPeriodTo.Location = new System.Drawing.Point(489, 188);
+            this.dtpChrPeriodTo.Name = "dtpChrPeriodTo";
+            this.dtpChrPeriodTo.Size = new System.Drawing.Size(102, 20);
+            this.dtpChrPeriodTo.TabIndex = 13;
+            // 
+            // lblChrPeriodFrom
+            // 
+            this.lblChrPeriodFrom.AutoSize = true;
+            this.lblChrPeriodFrom.Location = new System.Drawing.Point(337, 194);
+            this.lblChrPeriodFrom.Name = "lblChrPeriodFrom";
+            this.lblChrPeriodFrom.Size = new System.Drawing.Size(13, 13);
+            this.lblChrPeriodFrom.TabIndex = 14;
+            this.lblChrPeriodFrom.Text = "с";
+            // 
+            // lblChrPeriodTo
+            // 
+            this.lblChrPeriodTo.AutoSize = true;
+            this.lblChrPeriodTo.Location = new System.Drawing.Point(464, 194);
+            this.lblChrPeriodTo.Name = "lblChrPeriodTo";
+            this.lblChrPeriodTo.Size = new System.Drawing.Size(19, 13);
+            this.lblChrPeriodTo.TabIndex = 14;
+            this.lblChrPeriodTo.Text = "по";
+            // 
+            // clbCharts
+            // 
+            this.clbCharts.FormattingEnabled = true;
+            this.clbCharts.Location = new System.Drawing.Point(639, 214);
+            this.clbCharts.Name = "clbCharts";
+            this.clbCharts.Size = new System.Drawing.Size(105, 154);
+            this.clbCharts.TabIndex = 15;
+            // 
+            // lblMesPeriodTo
+            // 
+            this.lblMesPeriodTo.AutoSize = true;
+            this.lblMesPeriodTo.Location = new System.Drawing.Point(442, 382);
+            this.lblMesPeriodTo.Name = "lblMesPeriodTo";
+            this.lblMesPeriodTo.Size = new System.Drawing.Size(19, 13);
+            this.lblMesPeriodTo.TabIndex = 20;
+            this.lblMesPeriodTo.Text = "по";
+            this.lblMesPeriodTo.Visible = false;
+            // 
+            // lblMesPeriodFrom
+            // 
+            this.lblMesPeriodFrom.AutoSize = true;
+            this.lblMesPeriodFrom.Location = new System.Drawing.Point(315, 382);
+            this.lblMesPeriodFrom.Name = "lblMesPeriodFrom";
+            this.lblMesPeriodFrom.Size = new System.Drawing.Size(13, 13);
+            this.lblMesPeriodFrom.TabIndex = 21;
+            this.lblMesPeriodFrom.Text = "с";
+            this.lblMesPeriodFrom.Visible = false;
+            // 
+            // dtpMesPeriodTo
+            // 
+            this.dtpMesPeriodTo.Location = new System.Drawing.Point(467, 376);
+            this.dtpMesPeriodTo.Name = "dtpMesPeriodTo";
+            this.dtpMesPeriodTo.Size = new System.Drawing.Size(102, 20);
+            this.dtpMesPeriodTo.TabIndex = 18;
+            this.dtpMesPeriodTo.Visible = false;
+            // 
+            // dtpMesPeriodFrom
+            // 
+            this.dtpMesPeriodFrom.Location = new System.Drawing.Point(334, 376);
+            this.dtpMesPeriodFrom.Name = "dtpMesPeriodFrom";
+            this.dtpMesPeriodFrom.Size = new System.Drawing.Size(102, 20);
+            this.dtpMesPeriodFrom.TabIndex = 19;
+            this.dtpMesPeriodFrom.Visible = false;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(37, 382);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(48, 13);
+            this.label5.TabIndex = 17;
+            this.label5.Text = "Период:";
+            // 
+            // cbMeasurePeriods
+            // 
+            this.cbMeasurePeriods.FormattingEnabled = true;
+            this.cbMeasurePeriods.Location = new System.Drawing.Point(91, 375);
+            this.cbMeasurePeriods.Name = "cbMeasurePeriods";
+            this.cbMeasurePeriods.Size = new System.Drawing.Size(121, 21);
+            this.cbMeasurePeriods.TabIndex = 16;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(715, 555);
+            this.ClientSize = new System.Drawing.Size(756, 583);
+            this.Controls.Add(this.lblMesPeriodTo);
+            this.Controls.Add(this.lblMesPeriodFrom);
+            this.Controls.Add(this.dtpMesPeriodTo);
+            this.Controls.Add(this.dtpMesPeriodFrom);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.cbMeasurePeriods);
+            this.Controls.Add(this.clbCharts);
+            this.Controls.Add(this.lblChrPeriodTo);
+            this.Controls.Add(this.lblChrPeriodFrom);
+            this.Controls.Add(this.dtpChrPeriodTo);
+            this.Controls.Add(this.dtpChrPeriodFrom);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.cbChartPeriod);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnAddTest);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.gbLastMonthTemperature);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.dgvMain);
             this.Controls.Add(this.dtpDate);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.label1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
-            this.Text = "Wether Diary =)";
+            this.Text = "Weather Diary =)";
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.rowMenu.ResumeLayout(false);
             this.gbLastMonthTemperature.ResumeLayout(false);
             this.gbLastMonthTemperature.PerformLayout();
@@ -482,25 +430,8 @@
         private System.Windows.Forms.DateTimePicker dtpDate;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dgvMain;
-        private System.Windows.Forms.MaskedTextBox mtbTime;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox cbWind;
-        private System.Windows.Forms.ComboBox cbCloud;
-        private System.Windows.Forms.TextBox tbPressure;
-        private System.Windows.Forms.TextBox tbTemperature;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button btnAdd;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.ComboBox cbPrecipitation;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ContextMenuStrip rowMenu;
         private System.Windows.Forms.ToolStripMenuItem deleteRowItem;
-        private System.Windows.Forms.DateTimePicker dtpTime;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.GroupBox gbLastMonthTemperature;
         private System.Windows.Forms.Label label10;
@@ -513,12 +444,25 @@
         private System.Windows.Forms.ToolStripMenuItem CloudToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem PrecipitationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem WindToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem WindForceВетраToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem WindForceToolStripMenuItem;
         private System.Windows.Forms.Label lblAvgTemperature;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.DataGridView dgvYearsDays;
         private System.Windows.Forms.Button btnAddTest;
+        private System.Windows.Forms.ComboBox cbChartPeriod;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.DateTimePicker dtpChrPeriodFrom;
+        private System.Windows.Forms.DateTimePicker dtpChrPeriodTo;
+        private System.Windows.Forms.Label lblChrPeriodFrom;
+        private System.Windows.Forms.Label lblChrPeriodTo;
+        private System.Windows.Forms.CheckedListBox clbCharts;
+        private System.Windows.Forms.Label lblMesPeriodTo;
+        private System.Windows.Forms.Label lblMesPeriodFrom;
+        private System.Windows.Forms.DateTimePicker dtpMesPeriodTo;
+        private System.Windows.Forms.DateTimePicker dtpMesPeriodFrom;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox cbMeasurePeriods;
     }
 }
 

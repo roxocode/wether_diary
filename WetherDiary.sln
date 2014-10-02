@@ -1,11 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C# Express 2008
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WetherDiary", "WetherDiary\WetherDiary.csproj", "{CFBC8510-6828-4AD4-8AF4-2C87DFC6355A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBEngine", "DBEngine\DBEngine.csproj", "{A06ED373-FB14-4BBE-B5BD-C5FCD29C684A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WetherImporter", "WetherImporter\WetherImporter\WetherImporter.csproj", "{E7EAA5E3-39B4-4C63-B1A6-716CF4F5F9B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherStarter", "WeatherStarter\WeatherStarter.csproj", "{49808AE1-01F8-450E-B379-E60B2277C7B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,8 +27,15 @@ Global
 		{E7EAA5E3-39B4-4C63-B1A6-716CF4F5F9B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7EAA5E3-39B4-4C63-B1A6-716CF4F5F9B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7EAA5E3-39B4-4C63-B1A6-716CF4F5F9B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49808AE1-01F8-450E-B379-E60B2277C7B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49808AE1-01F8-450E-B379-E60B2277C7B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49808AE1-01F8-450E-B379-E60B2277C7B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49808AE1-01F8-450E-B379-E60B2277C7B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

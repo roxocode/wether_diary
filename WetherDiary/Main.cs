@@ -3,23 +3,28 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.OleDb;
+using System.Data.SQLite;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using DBEngine;
 using DBEngine.Access;
+using System.Linq;
 
 /*
  * Author: alex
  * 5 december 2012
+ * 
+ * TODO: облачность ветер и осадки в виде иконок
+ * день на графике с 1 числа, а не с 0
  * TODO: проставить TabIndex
  * TODO: обработка ошибок RowError при редактировании строк (особено для столбца с датой, выпадающий календарь)
  * TODO: обработка ошибки когда пользователь удаляет запись из справочника которая используется в главной таблице (обработка события DataGridView.DataError)
  * TODO: возможность ввода доробных чисел в поля Температура и Давление (обработка события DataGridView.DataError)
- * TODO: отображать сообщение об ошибке когда нельзя вставить строку (при переименовании колонки Measure_Date в Date)
- * TODO: drop first column (empty) in DataGridView
- * TODO: 2013-06-15 возможность сохранять пользовательские настройки (ширина колонок, цвет) в файл
+ * TODO: 2013-06-15 возможность сохранять пользовательские настройки (ширина колонок, цвет) в файл (there is article in rsdn)
+ * TODO: возможно для функций выполнения запросов тип аргумента сделать отличным от SQLiteCommand, OleDbCommand etc. сделать полиморфизм
+ * TODO: в datetimepicker при смене месяца срабатывает событие valueChange
+ * TODO: сделать определенные цвета на графике
  */
 
 namespace WetherDiary
@@ -29,7 +34,7 @@ namespace WetherDiary
         /// <summary>
         /// Движок БД
         /// </summary>
-        private AccessDBEngine _engine;
+        private SQLiteDBEngine _engine;
 
         string tableName;
 
@@ -38,12 +43,59 @@ namespace WetherDiary
         /// </summary>
         public object ID;
 
+        /// <summary>
+        /// График
+        /// </summary>
+        public System.Windows.Forms.DataVisualization.Charting.Chart crtWeather = new System.Windows.Forms.DataVisualization.Charting.Chart();
+
         public MainForm()
         {
             InitializeComponent();
 
+            // TODO: delete button
+            // hide button
+            btnSave.Visible = false;
+
+            // Настраиваем програмно-созданный MSChart
+            crtWeather.Name = "testChart";
+            crtWeather.Location = new Point(15, 214);
+            crtWeather.Size = new System.Drawing.Size(576, 162);
+            crtWeather.ChartAreas.Add(new System.Windows.Forms.DataVisualization.Charting.ChartArea("chrArea"));
+            this.Controls.Add(crtWeather);
+
+            // chart control customization
+            crtWeather.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.DarkGray;
+            crtWeather.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.DarkGray;
+            crtWeather.ChartAreas[0].AxisX.MinorGrid.Enabled = true;
+            crtWeather.ChartAreas[0].AxisX.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            crtWeather.ChartAreas[0].AxisX.MinorGrid.LineColor = Color.DarkGray;
+            crtWeather.Legends.Add("test");
+            // test
+
+            // DataGridView Initialize
+            dgvMain.RowHeadersVisible = false;
+            dgvMain.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvMain.MultiSelect = false;
+            dgvMain.AutoGenerateColumns = false;
+            dgvMain.ReadOnly = true;
+            dgvMain.AllowUserToAddRows = false;
+            this.tableName = "weather";
+            this._engine = new SQLiteDBEngine("weather.s3db");
+
+            cbChartPeriod.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbChartPeriod.Items.AddRange(new object[] { "7 дней", "Месяц", "Задать вручную ..." });
+            cbChartPeriod.SelectedIndex = 1;
+
+            cbMeasurePeriods.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbMeasurePeriods.Items.AddRange(new object[] { "7 дней", "Месяц", "Задать вручную ..." });
+            cbMeasurePeriods.SelectedIndex = 0;
+
+            clbCharts.CheckOnClick = true;
+            clbCharts.ItemCheck += clbCharts_ItemCheck;
+
             #region Аналогия по годам
 
+            dgvYearsDays.RowHeadersVisible = false;
             dgvYearsDays.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvYearsDays.AllowUserToAddRows = false;
             dgvYearsDays.AutoGenerateColumns = false;
@@ -61,21 +113,12 @@ namespace WetherDiary
             
             #endregion
 
-            dtpTime.Value = DateTime.Now;
-            // DataGridView Initialize
-            dgvMain.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvMain.MultiSelect = false;
-            dgvMain.AutoGenerateColumns = false;
-            dgvMain.EditMode = DataGridViewEditMode.EditOnEnter;
-            dgvMain.AllowUserToAddRows = false;
-            //dgvMain.FirstDisplayed
+            #region Grid Columns
 
-            this.tableName = "wether";
-            this._engine = new AccessDBEngine("wether.mdb");
-            // Add columns
             DataGridViewTextBoxColumn col = new DataGridViewTextBoxColumn();
             col.DataPropertyName = "ID";
             col.Name = "ID";
+            col.Width = 40;
             dgvMain.Columns.Add(col);
 
             col = new DataGridViewTextBoxColumn();
@@ -88,17 +131,19 @@ namespace WetherDiary
             col.DataPropertyName = "temperature";
             col.Name = "temperature";
             col.HeaderText = "Температура";
+            col.Width = 90;
             dgvMain.Columns.Add(col);
 
             col = new DataGridViewTextBoxColumn();
             col.DataPropertyName = "pressure";
             col.Name = "pressure";
             col.HeaderText = "Давление";
+            col.Width = 70;
             col.ValueType = typeof(double);
             dgvMain.Columns.Add(col);
-            /* TODO: temporary disabled (выяснить причину) */
+            
             var cloudColumn = new DataGridViewComboBoxColumn();
-            cloudColumn.DataSource = _engine.ExecuteQueryReturnDataTable(new OleDbCommand("SELECT * FROM cloud"));
+            cloudColumn.DataSource = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT * FROM cloud"));
             cloudColumn.DataPropertyName = "Cloud_ID";
             cloudColumn.Name = "Cloud_ID";
             cloudColumn.HeaderText = "Облачность";
@@ -109,7 +154,7 @@ namespace WetherDiary
             dgvMain.Columns.Add(cloudColumn);
 
             var windColumn = new DataGridViewComboBoxColumn();
-            windColumn.DataSource = _engine.ExecuteQueryReturnDataTable(new OleDbCommand("SELECT * FROM wind"));
+            windColumn.DataSource = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT * FROM wind"));
             windColumn.DataPropertyName = "Wind_ID";
             windColumn.Name = "Wind_ID";
             windColumn.HeaderText = "Ветер";
@@ -117,44 +162,85 @@ namespace WetherDiary
             windColumn.ValueMember = "ID";
             windColumn.FlatStyle = FlatStyle.Flat;
             dgvMain.Columns.Add(windColumn);
-            /**/
-            /*
-            var precipitationColumn = new DataGridViewComboBoxColumn();
-            precipitationColumn.DataSource = _engine.ExecuteQueryReturnDataTable(new OleDbCommand("SELECT * FROM precipitation"));
-            precipitationColumn.DataPropertyName = "Fallout_ID";
-            precipitationColumn.Name = "Fallout_ID";
-            precipitationColumn.HeaderText = "Осадки";
-            precipitationColumn.DisplayMember = "Name";
-            precipitationColumn.ValueMember = "ID";
-            precipitationColumn.FlatStyle = FlatStyle.Flat;
-            dgvMain.Columns.Add(precipitationColumn);
-            */
+
+            var windForceColumn = new DataGridViewComboBoxColumn();
+            windForceColumn.DataSource = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT * FROM windForce"));
+            windForceColumn.DataPropertyName = "WindForce_ID";
+            windForceColumn.Name = "WindForce_ID";
+            windForceColumn.HeaderText = "Сила ветра";
+            windForceColumn.DisplayMember = "Name";
+            windForceColumn.ValueMember = "ID";
+            windForceColumn.FlatStyle = FlatStyle.Flat;
+            dgvMain.Columns.Add(windForceColumn);
+
+            var falloutsImageColumn = new DataGridViewImageColumn();
+            falloutsImageColumn.DataPropertyName = "FalloutsImg";
+            falloutsImageColumn.Name = "FalloutsImg";
+            falloutsImageColumn.HeaderText = "Осадки";
+            dgvMain.Columns.Add(falloutsImageColumn);
             
-            // Fill controls
-            cbCloud.DataSource = _engine.ExecuteQueryReturnDataTable(new OleDbCommand("SELECT ID, Name FROM cloud"));
-            cbCloud.DisplayMember = "Name";
-            cbCloud.ValueMember = "ID";
-
-            cbWind.DataSource = _engine.ExecuteQueryReturnDataTable(new OleDbCommand("SELECT * FROM wind"));
-            cbWind.DisplayMember = "Name";
-            cbWind.ValueMember = "ID";
-
-            cbPrecipitation.DataSource = _engine.ExecuteQueryReturnDataTable(new OleDbCommand("SELECT * FROM precipitation"));
-            cbPrecipitation.DisplayMember = "Name";
-            cbPrecipitation.ValueMember = "ID";
-
             // Columns color 
             // TODO: make setting by user
             dgvMain.Columns[0].DefaultCellStyle.BackColor = Color.Azure;
             dgvMain.Columns[2].DefaultCellStyle.BackColor = Color.Azure;
-            //dgvMain.Columns[4].DefaultCellStyle.BackColor = Color.Azure;
 
-            // TODO: rewrite
-            DataTable dt = _engine.ExecuteQueryReturnDataTable(new OleDbCommand("SELECT * FROM wether"));
+            #endregion
+            
+            // TODO: set by user in preference
+            int maxRowCount = 7;
+            string sqlMeasures = string.Format("SELECT * FROM weather WHERE date(Measure_Date) <= date('{0}') ORDER BY Measure_Date DESC LIMIT {1}", 
+                dtpDate.Value.ToString("yyyy-MM-dd"), 
+                maxRowCount);
+            DataTable dt = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlMeasures));
+            
+            // Добавляем колонку с иконками осадков
+            // TODO: Сделать обновление после изменения замеров
+            dt.Columns.Add(new DataColumn("FalloutsImg", typeof(Image)));
+            // Убираем иконку (красный крестик) для ячейки без значения
+            dgvMain.Columns["FalloutsImg"].DefaultCellStyle.NullValue = null;
+            UpdateFalloutsIconColumn(dt);
+            
+            /* TODO: 2014-09-01 будет работать - удалить
+            foreach (DataRow dr in dt.Rows)
+            {
+                DataTable dtIconPaths = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(string.Format(
+                    "SELECT IconPath FROM fallouts fs INNER JOIN fallout f ON fs.Fallout_ID = f.ID WHERE Measure_ID = {0}",// AND IconPath <> ''",
+                    dr["ID"])));
+
+                if (dtIconPaths.Rows.Count > 1)
+                {
+                    // TODO: 2014-04-22 Проверки на существование файла и на подходящий размер
+                    // Предполагаем что для каждой записи с непустым IconPath есть валидная иконка и ее размер 16х16 px
+                    // Длину считаем как кол-во иконок * их длину (16 px) + расстояние между ними (4 px)
+                    int iconWidthHeight = 16;
+                    int spaceBtwIcons = 4;
+
+                    int outputImgWidth = dtIconPaths.Rows.Count * iconWidthHeight + (dtIconPaths.Rows.Count - 1) * spaceBtwIcons;
+                    Bitmap outputImage = new Bitmap(outputImgWidth, iconWidthHeight);
+
+                    using (Graphics outputGraphics = Graphics.FromImage(outputImage))
+                    {
+                        foreach (DataRow drIconPath in dtIconPaths.Rows)
+                        {
+                            outputGraphics.DrawImage(Icons.GetIconImage(drIconPath["IconPath"].ToString()), 
+                                (iconWidthHeight + spaceBtwIcons) * dtIconPaths.Rows.IndexOf(drIconPath), 0);
+                        }
+                    }
+                    dr["FalloutsImg"] = outputImage;
+                }
+                else if (dtIconPaths.Rows.Count == 1)
+                {
+                    dr["FalloutsImg"] = Icons.GetIconImage(dtIconPaths.Rows[0]["IconPath"].ToString());
+                }
+            }
+            */
+
             BindingSource bs = new BindingSource();
             bs.DataSource = dt;
             dgvMain.DataSource = bs;
 
+            // Для перерисовки графика при запуске программы
+            // TODO: при запуске программы не выделяются мин. и макс. температуры
             CurrentDateChanged(this, EventArgs.Empty);
 
             // Context Menu
@@ -162,31 +248,178 @@ namespace WetherDiary
 
             // Events
             // TODO: DialogResult on FormClosing event : read article in 'coding' bookmark folder
-            // TODO: 2013-06-10 temporary disabled because of error while loading lage file (wether.mdb)
             dgvMain.CurrentCellChanged += CellChanged;
             dgvMain.MouseDown += dgvMain_MouseDown;
             deleteRowItem.Click += deleteRow;
-            dtpDate.ValueChanged += CurrentDateChanged;
             dgvMain.DataError += new DataGridViewDataErrorEventHandler(OnGridDataError);
             dgvMain.CellMouseDoubleClick += dgvMain_CellMouseDoubleClick;
             
+            dtpDate.ValueChanged += CurrentDateChanged;
+            cbChartPeriod.SelectedIndexChanged += cbChartPeriod_SelectedIndexChanged;
+            cbMeasurePeriods.SelectedIndexChanged += cbMeasurePeriods_SelectedIndexChanged;
         }
 
-        private void btnAdd_Click(object sender, EventArgs e)
+        void cbMeasurePeriods_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // TODO: Check for record with the same date (like in dtpDate) and if exist then select record
-            DataTable wetherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
-            DataRow row = wetherTable.NewRow();
-            string fullDate = dtpDate.Value.ToString("yyyy-MM-dd") + " " + dtpTime.Value.ToString("HH:mm");
-            row["Measure_Date"] = fullDate;
-            row["Temperature"] = Converters.ConvertNumbToAccess(tbTemperature.Text);
-            row["Pressure"] = Converters.ConvertNumbToAccess(tbPressure.Text);
-            row["Cloud_ID"] = cbCloud.SelectedValue;
-            row["Wind_ID"] = cbWind.SelectedValue;
-            //row["Fallout_ID"] = cbPrecipitation.SelectedValue;
-            wetherTable.Rows.Add(row);
+            Action<bool> ToggleVisiblePeriods = (bool visible) =>
+            {
+                if (visible)
+                {
+                    lblMesPeriodFrom.Visible = true;
+                    lblMesPeriodTo.Visible = true;
+                    dtpMesPeriodFrom.Visible = true;
+                    dtpMesPeriodTo.Visible = true;
+                }
+                else
+                {
+                    lblMesPeriodFrom.Visible = false;
+                    lblMesPeriodTo.Visible = false;
+                    dtpMesPeriodFrom.Visible = false;
+                    dtpMesPeriodTo.Visible = false;
+                }
+            };
 
-            this.btnSave_Click(sender, EventArgs.Empty);
+            string sqlMeasures;
+            BindingSource bs = new BindingSource();
+            switch (cbMeasurePeriods.SelectedIndex)
+            {
+                case 0:
+                    ToggleVisiblePeriods(false);
+                    sqlMeasures = string.Format("SELECT * FROM weather WHERE date(Measure_Date) <= date('{0}') ORDER BY Measure_Date DESC LIMIT {1}",
+                        dtpDate.Value.ToString("yyyy-MM-dd"),
+                        7);
+                    bs.DataSource = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlMeasures));
+                    dgvMain.DataSource = bs;
+                    break;
+                case 1:
+                    ToggleVisiblePeriods(false);
+                    sqlMeasures = string.Format("SELECT * FROM weather WHERE date(Measure_Date) <= date('{0}') ORDER BY Measure_Date DESC LIMIT {1}",
+                        dtpDate.Value.ToString("yyyy-MM-dd"),
+                        10);
+                    bs.DataSource = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlMeasures));
+                    dgvMain.DataSource = bs;
+                    break;
+                case 2:
+                    ToggleVisiblePeriods(true);
+                    sqlMeasures = string.Format("SELECT * FROM weather WHERE date(Measure_Date) BETWEEN date('{0}') AND date('{1}') ORDER BY Measure_Date DESC",
+                        dtpMesPeriodFrom.Value.ToString("yyyy-MM-dd"),
+                        dtpMesPeriodTo.Value.ToString("yyyy-MM-dd"));
+                    bs.DataSource = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlMeasures));
+                    dgvMain.DataSource = bs;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Check / Uncheck relevant graph
+        /// </summary>
+        void clbCharts_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Checked)
+            {
+                crtWeather.Series[clbCharts.GetItemText(clbCharts.Items[e.Index])].Enabled = true;
+            }
+            else
+            {
+                crtWeather.Series[clbCharts.GetItemText(clbCharts.Items[e.Index])].Enabled = false;
+            }
+        }
+
+        void cbChartPeriod_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Action<bool> ToggleVisiblePeriods = (bool visible) =>
+                {
+                    if (visible)
+                    {
+                        lblChrPeriodFrom.Visible = true;
+                        lblChrPeriodTo.Visible = true;
+                        dtpChrPeriodFrom.Visible = true;
+                        dtpChrPeriodTo.Visible = true;
+                    }
+                    else
+                    {
+                        lblChrPeriodFrom.Visible = false;
+                        lblChrPeriodTo.Visible = false;
+                        dtpChrPeriodFrom.Visible = false;
+                        dtpChrPeriodTo.Visible = false;
+                    }
+                };
+            switch (cbChartPeriod.SelectedIndex)
+            {
+                case 0:
+                    ToggleVisiblePeriods(false);
+                    break;
+                case 1:
+                    ToggleVisiblePeriods(false);
+                    
+                    string sqlGetMonths = string.Format(
+                                            "SELECT strftime('%Y', Measure_Date) AS Year, date(Measure_Date) AS Date, Temperature FROM weather WHERE CAST(strftime('%m', Measure_Date) AS INTEGER) = {0}",
+                                            dtpDate.Value.Month);
+                    DataTable monthsData = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlGetMonths));
+                    // года за которые есть замеры
+                    var res = from row in monthsData.AsEnumerable()
+                              group row by row.Field<string>("Year") into grp
+                              select grp.Key;
+                    string[] years = res.ToArray();
+
+                    // формат t['год'] = { 'день' = 'температура' }
+                    Dictionary<short, Dictionary<int, short>> t = new Dictionary<short, Dictionary<int, short>>();
+
+                    clbCharts.Items.Clear();
+                    crtWeather.Series.Clear();
+
+                    foreach (string year in years)
+                    {
+                        t.Add(Convert.ToInt16(year), null);
+                        clbCharts.Items.Add(year);
+
+                        var tmp = from row in monthsData.AsEnumerable()
+                                  where row.Field<string>("Year") == year
+                                  select new
+                                  {
+                                      Day = Convert.ToDateTime(row.Field<string>("Date")).Day,
+                                      Temperature = row.Field<double>("Temperature")
+                                  };
+                        // Сортируем по дням
+                        tmp = from row in tmp
+                              orderby row.Day
+                              select new { row.Day, row.Temperature };
+
+                        t[Convert.ToInt16(year)] = tmp.ToDictionary(x => x.Day, x => Convert.ToInt16(x.Temperature));
+                        // Добавляем данные на график
+                        crtWeather.Series.Add(year).Points.DataBindXY(t[Convert.ToInt16(year)].Keys, t[Convert.ToInt16(year)].Values);
+                        crtWeather.Series[year].Enabled = false;
+                        crtWeather.Series[year].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+                        crtWeather.Series[year].MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+                        crtWeather.Series[year].ToolTip = "#VAL";
+                    }
+                    
+                    // Отмечаем только текущий год
+                    //string maxYear = years.Select(int.Parse).Max().ToString();
+                    // TODO: How get Max in LINQ
+                    // TODO: LINQ for clbCharts.Items
+                    var maxYear = from year in years
+                                     where int.Parse(year) <= dtpDate.Value.Year
+                                     orderby int.Parse(year)
+                                     select year;
+                    string curYear = maxYear.Select(int.Parse).Max().ToString();
+                    clbCharts.SetItemChecked(clbCharts.Items.IndexOf(curYear), true);
+
+                    break;
+                case 2:
+                    ToggleVisiblePeriods(true);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Обновление данных и графика
+        /// </summary>
+        void UpdateChart()
+        {
+            // need or not ?
         }
 
         /// <summary>
@@ -222,15 +455,17 @@ namespace WetherDiary
             int deleteRowIndex = dgvMain.Rows.GetFirstRow(DataGridViewElementStates.Selected);
             if (deleteRowIndex > -1)
             {
-                DataTable wetherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
-                wetherTable.TableName = this.tableName;
+                DataTable weatherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
+                weatherTable.TableName = this.tableName;
                 // удаляем осадки (fallouts)
                 string deleteFallouts = string.Format("DELETE FROM {0} WHERE Measure_ID = {1}", 
                     "fallouts",
-                    wetherTable.Rows[deleteRowIndex]["ID"]);
-                this._engine.ExecuteQuery(new OleDbCommand(deleteFallouts));
+                    weatherTable.Rows[deleteRowIndex]["ID"]);
+                this._engine.ExecuteQuery(new SQLiteCommand(deleteFallouts));
                 dgvMain.Rows.RemoveAt(deleteRowIndex);
-                this._engine.Update(wetherTable);
+                this._engine.Update(weatherTable);
+                // Перерисовываем график
+                cbChartPeriod_SelectedIndexChanged(dtpDate, EventArgs.Empty);                
             }
         }
 
@@ -258,24 +493,32 @@ namespace WetherDiary
 	                MIN(Temperature) AS MinTemperature, 
 	                MAX(Temperature) AS MaxTemperature,
                     AVG(Temperature) AS AvgTemperature 
-                FROM wether 
-                WHERE MONTH(Measure_Date) = {0} AND YEAR(Measure_Date) = {1}";
-            OleDbCommand temperatureCmd = new OleDbCommand(string.Format(sql, 
+                FROM weather 
+                WHERE 
+                CAST(strftime('%m', Measure_Date) AS INTEGER) = '{0}' 
+                AND CAST(strftime('%Y', Measure_Date) AS INTEGER) = '{1}'";
+            SQLiteCommand temperatureCmd = new SQLiteCommand(string.Format(sql, 
                 new object[] 
                 {
-                    dtpDate.Value.AddMonths(-1).Month,
-                    dtpDate.Value.AddMonths(-1).Year
+                    dtpDate.Value.Month,
+                    dtpDate.Value.Year
                 }
                 ));
             DataRow minMaxTempRow = this._engine.ExecuteQueryReturnDataRow(temperatureCmd);
             lblMinTemperature.Text = minMaxTempRow[0].ToString();
             lblMaxTemperature.Text = minMaxTempRow[1].ToString();
-            // TODO: 2013-06-24 number format like xx.x in SQL
-            lblAvgTemperature.Text = minMaxTempRow[2].ToString();
+            double avgTemperature = (minMaxTempRow[2] == DBNull.Value) ? 0 : Convert.ToDouble(minMaxTempRow[2]);
+            lblAvgTemperature.Text = avgTemperature.ToString("##.#");
 
             // Температуры за все года аналогичного дня
-            string yearDaysSql = "SELECT YEAR(Measure_Date) AS [Year], Temperature FROM wether WHERE MONTH(Measure_Date) = {0} AND DAY(Measure_Date) = {1} ORDER BY YEAR(Measure_Date)";
-            OleDbCommand yearDaysCmd = new OleDbCommand(string.Format(yearDaysSql,
+            string yearDaysSql = @"
+                SELECT strftime('%Y', Measure_Date) AS [Year], Temperature 
+                FROM weather 
+                WHERE 
+                    CAST(strftime('%m', Measure_Date) AS INTEGER) = '{0}' 
+                    AND CAST(strftime('%d', Measure_Date) AS INTEGER) = '{1}' 
+                ORDER BY strftime('%Y', Measure_Date) DESC";
+            SQLiteCommand yearDaysCmd = new SQLiteCommand(string.Format(yearDaysSql,
                 new object[]
                 {
                     dtpDate.Value.Month,
@@ -284,6 +527,9 @@ namespace WetherDiary
                 ));
             DataTable yearDaysTable = this._engine.ExecuteQueryReturnDataTable(yearDaysCmd);
             dgvYearsDays.DataSource = yearDaysTable;
+            // Помечаем ячейку с минимальной и максимальной температурой 
+            if (yearDaysTable.Rows.Count >= 2)
+                MarkMinAndMaxTemp();
 
             // Выделяем строку с выбранной датой
             DateTime selectedDate;
@@ -296,14 +542,44 @@ namespace WetherDiary
                     dgvMain.FirstDisplayedScrollingRowIndex = i;
                 }
             }
+
+            // Перерисовываем график
+            cbChartPeriod_SelectedIndexChanged(dtpDate, EventArgs.Empty);
+
+            //dgvMain.Update();
+            //dgvMain.Refresh();
+        }
+
+        /// <summary>
+        /// Mark minimum and maximum teperatures in table
+        /// </summary>
+        private void MarkMinAndMaxTemp()
+        {
+            var minTemp = (from row in ((DataTable)dgvYearsDays.DataSource).AsEnumerable() 
+                           orderby row.Field<Double>("Temperature")
+                           select
+                            row.Field<Double>("Temperature")).FirstOrDefault();
+
+            var maxTemp = (from row in ((DataTable)dgvYearsDays.DataSource).AsEnumerable() 
+                           orderby row.Field<Double>("Temperature") descending
+                           select 
+                            row.Field<Double>("Temperature")).FirstOrDefault();
+
+            foreach (DataGridViewRow dgr in dgvYearsDays.Rows)
+            {
+                if (Convert.ToDouble(dgr.Cells[1].Value) == minTemp)
+                    dgr.DefaultCellStyle.BackColor = Color.OrangeRed;
+                if (Convert.ToDouble(dgr.Cells[1].Value) == maxTemp)
+                    dgr.DefaultCellStyle.BackColor = Color.LightGreen;
+            }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            DataTable wetherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
-            wetherTable.TableName = this.tableName;
-            this._engine.Update(wetherTable);
-            wetherTable.AcceptChanges();
+            DataTable weatherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
+            weatherTable.TableName = this.tableName;
+            this._engine.Update(weatherTable);
+            weatherTable.AcceptChanges();
         }
 
         private void OnGridDataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -330,9 +606,11 @@ namespace WetherDiary
         /// </summary>
         private void FalloutToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // TODO: 2014-04-22 Отображать кнопку для выбора пути в колонке с иконками осадков (Открывать по другому, для правильного отображения?)
             // Get DataTable
-            DataGridViewComboBoxColumn cbc = dgvMain.Columns["Fallout_ID"] as DataGridViewComboBoxColumn;
-            DataTable dt = cbc.DataSource as DataTable;
+            //DataGridViewComboBoxColumn cbc = dgvMain.Columns["Fallout_ID"] as DataGridViewComboBoxColumn;
+            //DataTable dt = cbc.DataSource as DataTable;
+            DataTable dt = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT * FROM fallout"));
             dt.TableName = "fallout";
             Book precipitation = new Book(dt);
             precipitation.Text = "Осадки";
@@ -351,6 +629,19 @@ namespace WetherDiary
             Book precipitation = new Book(dt);
             precipitation.Text = "Ветер";
             precipitation.ShowDialog();
+        }
+
+        /// <summary>
+        /// Справочник - Сила ветра
+        /// </summary>
+        private void WindForceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get DataTable
+            DataTable dt = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT * FROM windForce"));
+            dt.TableName = "windForce";
+            Book windForce = new Book(dt);
+            windForce.Text = "Сила ветра";
+            windForce.ShowDialog();
         }
 
         /// <summary>
@@ -373,27 +664,69 @@ namespace WetherDiary
         /// <summary>
         /// Добавляем новый замер
         /// </summary>
-        private void btnAddTest_Click(object sender, EventArgs e)
+        private void btnAddMeasure_Click(object sender, EventArgs e)
         {
             AddMeasure addMeasureForm = new AddMeasure(dgvMain.DataSource, null);
             if (addMeasureForm.ShowDialog() == DialogResult.OK)
             {
                 int newRowIndex = -1;
-                // ToDo: maybe make wetherTable property of this class ?
-                DataTable wetherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
+                // ToDo: maybe make weatherTable parameter of this class ?
+                DataTable weatherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
                 // ищем индекс добавленной строки
                 for (int i = 0; i < dgvMain.Rows.Count; i++)
                 {
-                    if (wetherTable.Rows[i].RowState == DataRowState.Added)
+                    if (weatherTable.Rows[i].RowState == DataRowState.Added)
                         newRowIndex = i;
                 }
                 this.btnSave_Click(addMeasureForm, EventArgs.Empty);
                 // и получаем ее ID
-                MessageBox.Show(wetherTable.Rows[newRowIndex]["ID"].ToString());
-                addMeasureForm.SaveFallouts(wetherTable.Rows[newRowIndex]["ID"]);
+                MessageBox.Show(String.Format("New row ID: {0}", weatherTable.Rows[newRowIndex]["ID"]));
+                addMeasureForm.SaveFallouts(weatherTable.Rows[newRowIndex]["ID"]);
+                //((BindingSource)dgvMain.DataSource).ResetBindings(true);
+                // Update chart
+                cbChartPeriod_SelectedIndexChanged(null, EventArgs.Empty);
+                ((BindingSource)dgvMain.DataSource).Sort = "Measure_Date DESC";
             }
             addMeasureForm.Close();
             addMeasureForm.Dispose();
+        }
+
+        /// <summary>
+        /// Update fallouts icons in appropriate column
+        /// </summary>
+        private void UpdateFalloutsIconColumn(DataTable dt)
+        {
+            foreach (DataRow dr in dt.Rows)
+            {
+                DataTable dtIconPaths = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(string.Format(
+                    "SELECT IconPath FROM fallouts fs INNER JOIN fallout f ON fs.Fallout_ID = f.ID WHERE Measure_ID = {0}",// AND IconPath <> ''",
+                    dr["ID"])));
+
+                if (dtIconPaths.Rows.Count > 1)
+                {
+                    // TODO: 2014-04-22 Проверки на существование файла и на подходящий размер
+                    // Предполагаем что для каждой записи с непустым IconPath есть валидная иконка и ее размер 16х16 px
+                    // Длину считаем как кол-во иконок * их длину (16 px) + расстояние между ними (4 px)
+                    int spaceBtwIcons = 4;
+
+                    int outputImgWidth = dtIconPaths.Rows.Count * Icons.IconSize + (dtIconPaths.Rows.Count - 1) * spaceBtwIcons;
+                    Bitmap outputImage = new Bitmap(outputImgWidth, Icons.IconSize);
+
+                    using (Graphics outputGraphics = Graphics.FromImage(outputImage))
+                    {
+                        foreach (DataRow drIconPath in dtIconPaths.Rows)
+                        {
+                            outputGraphics.DrawImage(Icons.GetIconImage(drIconPath["IconPath"].ToString()),
+                                (Icons.IconSize + spaceBtwIcons) * dtIconPaths.Rows.IndexOf(drIconPath), 0);
+                        }
+                    }
+                    dr["FalloutsImg"] = outputImage;
+                }
+                else if (dtIconPaths.Rows.Count == 1)
+                {
+                    dr["FalloutsImg"] = Icons.GetIconImage(dtIconPaths.Rows[0]["IconPath"].ToString());
+                }
+            }
         }
     }
 }
