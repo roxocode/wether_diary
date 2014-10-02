@@ -1,8 +1,0 @@
-C:\My_project\WetherImporter\WetherImporter\obj\Release\ResolveAssemblyReference.cache
-C:\My_project\WetherImporter\WetherImporter\obj\Release\WetherImporter.csproj.ResolveComReference.cache
-C:\My_project\WetherImporter\WetherImporter\bin\Release\WetherImporter.exe
-C:\My_project\WetherImporter\WetherImporter\bin\Release\WetherImporter.pdb
-C:\My_project\WetherImporter\WetherImporter\bin\Release\DBEngine.dll
-C:\My_project\WetherImporter\WetherImporter\bin\Release\DBEngine.pdb
-C:\My_project\WetherImporter\WetherImporter\obj\Release\WetherImporter.exe
-C:\My_project\WetherImporter\WetherImporter\obj\Release\WetherImporter.pdb
