@@ -25,9 +25,7 @@ namespace WetherDiary
         {
             InitializeComponent();
 
-            // DBEngine with parameter
-            // TODO: 2014-09-01 store DB name in app.config (or elsewhere)
-            this.engine = new SQLiteDBEngine("weather.s3db");
+            this.engine = new SQLiteDBEngine(Properties.Settings.Default.DbName);
             // Облачность
             cbCloud.DataSource = engine.AddBlankRow(engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT ID, Name FROM cloud")));
             cbCloud.DisplayMember = "Name";

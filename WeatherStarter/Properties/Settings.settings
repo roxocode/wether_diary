@@ -1,7 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WeatherStarter.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="UpdateURI" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ftp://weather-diary.hostoi.com/public_html/</Value>
+    </Setting>
+    <Setting Name="UserFTP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">a1613050</Value>
+    </Setting>
+    <Setting Name="PasswordFTP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">alex7rox</Value>
+    </Setting>
+    <Setting Name="VersionXmlPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">backup\version.xml</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

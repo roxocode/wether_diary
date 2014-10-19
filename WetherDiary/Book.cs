@@ -19,7 +19,7 @@ namespace WetherDiary
         public Book()
         {
             InitializeComponent();
-            this.engine = new DBEngine.SQLiteDBEngine("weather.s3db");
+            this.engine = new DBEngine.SQLiteDBEngine(Properties.Settings.Default.DbName);
 
             dgvBook.RowHeadersVisible = false;
             dgvBook.SelectionMode = DataGridViewSelectionMode.FullRowSelect;

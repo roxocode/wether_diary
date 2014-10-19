@@ -6,11 +6,10 @@ using System.Data;
 using System.Data.SQLite;
 
  /*
- *  Движок для работы с БД (MS Access - Jet)
+  *  Движок для работы с БД (SQLite, MS Access - Jet)
   *  
   * FixMe: remove Connection private variable from class and implement ExecuteQuery
   * 
-  * ToDo: Load and save connection string in encripted config.xml (page 87)
  */
 
 namespace DBEngine
@@ -134,7 +133,6 @@ namespace DBEngine
         {
             if (e.StatementType == StatementType.Insert)
             {
-                //SQLiteCommand cmdNewID = new SQLiteCommand("SELECT @@IDENTITY", _connection);
                 SQLiteCommand cmdNewID = new SQLiteCommand("SELECT last_insert_rowid()", _connection);
                 e.Row["ID"] = Convert.ToInt32(cmdNewID.ExecuteScalar());
                 e.Status = UpdateStatus.SkipCurrentRow;

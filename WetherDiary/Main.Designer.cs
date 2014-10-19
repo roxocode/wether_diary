@@ -34,7 +34,6 @@
             this.dgvMain = new System.Windows.Forms.DataGridView();
             this.rowMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteRowItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnSave = new System.Windows.Forms.Button();
             this.gbLastMonthTemperature = new System.Windows.Forms.GroupBox();
             this.lblAvgTemperature = new System.Windows.Forms.Label();
             this.lblMaxTemperature = new System.Windows.Forms.Label();
@@ -44,8 +43,8 @@
             this.label9 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.BooksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PrecipitationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CloudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WindToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WindForceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,6 +64,8 @@
             this.dtpMesPeriodFrom = new System.Windows.Forms.DateTimePicker();
             this.label5 = new System.Windows.Forms.Label();
             this.cbMeasurePeriods = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lblRainyDays = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
             this.rowMenu.SuspendLayout();
             this.gbLastMonthTemperature.SuspendLayout();
@@ -109,16 +110,6 @@
             this.deleteRowItem.Name = "deleteRowItem";
             this.deleteRowItem.Size = new System.Drawing.Size(158, 22);
             this.deleteRowItem.Text = "Удалить запись";
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(516, 43);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 5;
-            this.btnSave.Text = "Сохранить";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // gbLastMonthTemperature
             // 
@@ -210,31 +201,31 @@
             this.BooksToolStripMenuItem.Size = new System.Drawing.Size(94, 20);
             this.BooksToolStripMenuItem.Text = "Справочники";
             // 
-            // CloudToolStripMenuItem
-            // 
-            this.CloudToolStripMenuItem.Name = "CloudToolStripMenuItem";
-            this.CloudToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.CloudToolStripMenuItem.Text = "Облачность";
-            this.CloudToolStripMenuItem.Click += new System.EventHandler(this.CloudToolStripMenuItem_Click);
-            // 
             // PrecipitationToolStripMenuItem
             // 
             this.PrecipitationToolStripMenuItem.Name = "PrecipitationToolStripMenuItem";
-            this.PrecipitationToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.PrecipitationToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.PrecipitationToolStripMenuItem.Text = "Осадки";
             this.PrecipitationToolStripMenuItem.Click += new System.EventHandler(this.FalloutToolStripMenuItem_Click);
+            // 
+            // CloudToolStripMenuItem
+            // 
+            this.CloudToolStripMenuItem.Name = "CloudToolStripMenuItem";
+            this.CloudToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.CloudToolStripMenuItem.Text = "Облачность";
+            this.CloudToolStripMenuItem.Click += new System.EventHandler(this.CloudToolStripMenuItem_Click);
             // 
             // WindToolStripMenuItem
             // 
             this.WindToolStripMenuItem.Name = "WindToolStripMenuItem";
-            this.WindToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.WindToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.WindToolStripMenuItem.Text = "Ветер";
             this.WindToolStripMenuItem.Click += new System.EventHandler(this.WindToolStripMenuItem_Click);
             // 
             // WindForceToolStripMenuItem
             // 
             this.WindForceToolStripMenuItem.Name = "WindForceToolStripMenuItem";
-            this.WindForceToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.WindForceToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.WindForceToolStripMenuItem.Text = "Сила ветра";
             this.WindForceToolStripMenuItem.Click += new System.EventHandler(this.WindForceToolStripMenuItem_Click);
             // 
@@ -383,11 +374,31 @@
             this.cbMeasurePeriods.Size = new System.Drawing.Size(121, 21);
             this.cbMeasurePeriods.TabIndex = 16;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(467, 51);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(130, 13);
+            this.label3.TabIndex = 22;
+            this.label3.Text = "Кол-во дней с осадками";
+            // 
+            // lblRainyDays
+            // 
+            this.lblRainyDays.AutoSize = true;
+            this.lblRainyDays.Location = new System.Drawing.Point(603, 51);
+            this.lblRainyDays.Name = "lblRainyDays";
+            this.lblRainyDays.Size = new System.Drawing.Size(13, 13);
+            this.lblRainyDays.TabIndex = 23;
+            this.lblRainyDays.Text = "0";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(756, 583);
+            this.Controls.Add(this.lblRainyDays);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.lblMesPeriodTo);
             this.Controls.Add(this.lblMesPeriodFrom);
             this.Controls.Add(this.dtpMesPeriodTo);
@@ -407,11 +418,11 @@
             this.Controls.Add(this.gbLastMonthTemperature);
             this.Controls.Add(this.dgvMain);
             this.Controls.Add(this.dtpDate);
-            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.label1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "Weather Diary =)";
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).EndInit();
             this.rowMenu.ResumeLayout(false);
             this.gbLastMonthTemperature.ResumeLayout(false);
@@ -432,7 +443,6 @@
         private System.Windows.Forms.DataGridView dgvMain;
         private System.Windows.Forms.ContextMenuStrip rowMenu;
         private System.Windows.Forms.ToolStripMenuItem deleteRowItem;
-        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.GroupBox gbLastMonthTemperature;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label9;
@@ -463,6 +473,8 @@
         private System.Windows.Forms.DateTimePicker dtpMesPeriodFrom;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox cbMeasurePeriods;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblRainyDays;
     }
 }
 

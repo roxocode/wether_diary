@@ -9,22 +9,15 @@ namespace WetherDiary
 {
     static public class Icons
     {
-        // Width and height of icon - constant
-        static public byte IconSize
-        {
-            get
-            {
-                return 16;
-            }
-        }
-        // Directory in which stored icons
-        static public string IconsDirectory
-        {
-            get
-            {
-                return "icons";
-            }
-        }
+        /// <summary>
+        /// Width and height of icon - constant
+        /// </summary>
+        static public readonly byte IconSize = 16;
+
+        /// <summary>
+        /// Icon's directory
+        /// </summary>
+        static public readonly string IconsDirectory = "icons";
 
         // Получаем иконку осадка
         static public Image GetIconImage(string iconPath)

@@ -1,0 +1,17 @@
+bin
+obj
+/DBEngine/obj/
+# delete after rename Wather to Weather
+/WetherDiary/obj/
+/WeatherDiary/obj/
+/WeatherStarter/obj/
+WetherImporter/obj/*
+WetherImporter/bin/*
+/backup/
+/bin/TODO.txt
+*.backup
+*.pdb
+*.exe
+*.suo
+*.xls
+*.user

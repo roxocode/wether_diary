@@ -22,5 +22,41 @@ namespace WetherDiary.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("weather.s3db")]
+        public string DbName {
+            get {
+                return ((string)(this["DbName"]));
+            }
+            set {
+                this["DbName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("icons")]
+        public string IconsDir {
+            get {
+                return ((string)(this["IconsDir"]));
+            }
+            set {
+                this["IconsDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("default.png")]
+        public string DefaultIconName {
+            get {
+                return ((string)(this["DefaultIconName"]));
+            }
+            set {
+                this["DefaultIconName"] = value;
+            }
+        }
     }
 }
