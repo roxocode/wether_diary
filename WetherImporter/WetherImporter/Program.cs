@@ -18,10 +18,6 @@ namespace WetherImporter
             string file = "weather.xls";
             SQLiteDBEngine engine = new SQLiteDBEngine("weather.s3db");
 
-            // Count of used rows
-            int rowStart = 2;
-            int rowEnd = 2357;
-
             DateTime? dateMes = null;
             string timeMes = null;
             object tempMes = null;
@@ -29,17 +25,21 @@ namespace WetherImporter
             object falloutMes = null;
 
             Console.WriteLine("====== --- Wether Importer --- =====");
-            
-            Console.WriteLine(System.IO.Directory.GetCurrentDirectory());
+            Console.WriteLine("Don't forget to delete all unnecessary sheets!");
+
             Workbook book = Workbook.Load(file);
             Worksheet sheet = book.Worksheets[0];
-            
-            for (int rowIndex = rowStart; rowIndex <= rowEnd; rowIndex++)
+
+            // start row
+            int rowIndex = 2;
+            while (true)
             {
                 Row row = sheet.Cells.GetRow(rowIndex);
-                
+                if (row.GetCell(0).IsEmpty)
+                    return;
+
                 // Date
-                dateMes = row.GetCell(0).DateTimeValue;
+                dateMes = row.GetCell(0).DateTimeValue;                
                 // Time
                 // 2 вида времени: одна цифра "10" или в формате "hh:mm:ss" например "9:30"
                 Cell timeCell = row.GetCell(1);
@@ -66,12 +66,11 @@ namespace WetherImporter
                     fullDateTime = new DateTime(dateMes.Value.Year, dateMes.Value.Month, dateMes.Value.Day, 0, 0, 0);
                 
                 //Console.WriteLine(fullDateTime.ToString());
-                
+
                 string sql = string.Format("INSERT INTO weather (Measure_Date, Temperature, Pressure, Cloud_ID, Wind_ID) VALUES ({0}, {1}, {2}, {3}, {4})",
                     new object[] {
                             // TODO: 2013-11-08 how to save datetime to database
                             string.Format("'{0}'", fullDateTime.ToString("yyyy-MM-dd HH:mm")),
-                            //fullDateTime.ToString(),
                             tempMes,
                             pressureMes,
                             "NULL",
@@ -108,7 +107,7 @@ namespace WetherImporter
                     Console.WriteLine(rowIndex.ToString());
 
                 //Console.SetCursorPosition(0, Console.CursorTop);
-                //Console.Write(rowIndex.ToString());
+                rowIndex++;
             }
         }
 
@@ -116,8 +115,8 @@ namespace WetherImporter
         {
             importData();
 
+            #region old code with COM
             /*
-
             SQLiteDBEngine engine = new SQLiteDBEngine("weather.s3db");
 
             // Count of used rows
@@ -227,6 +226,8 @@ namespace WetherImporter
                 xlWorkbook = null;
             }
             */
+            #endregion
+
             Console.Write("Press any key...");
             Console.ReadKey();
         }

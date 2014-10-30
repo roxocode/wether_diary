@@ -28,24 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tbVersions = new System.Windows.Forms.TextBox();
+            this.tbCurrentVersions = new System.Windows.Forms.TextBox();
             this.tbUpdateVersions = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tbLog = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // tbVersions
+            // tbCurrentVersions
             // 
-            this.tbVersions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbVersions.Location = new System.Drawing.Point(12, 25);
-            this.tbVersions.Multiline = true;
-            this.tbVersions.Name = "tbVersions";
-            this.tbVersions.ReadOnly = true;
-            this.tbVersions.Size = new System.Drawing.Size(193, 80);
-            this.tbVersions.TabIndex = 0;
-            this.tbVersions.TabStop = false;
-            this.tbVersions.WordWrap = false;
+            this.tbCurrentVersions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbCurrentVersions.Location = new System.Drawing.Point(12, 25);
+            this.tbCurrentVersions.Multiline = true;
+            this.tbCurrentVersions.Name = "tbCurrentVersions";
+            this.tbCurrentVersions.ReadOnly = true;
+            this.tbCurrentVersions.Size = new System.Drawing.Size(193, 80);
+            this.tbCurrentVersions.TabIndex = 0;
+            this.tbCurrentVersions.TabStop = false;
+            this.tbCurrentVersions.WordWrap = false;
             // 
             // tbUpdateVersions
             // 
@@ -64,18 +64,18 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(87, 13);
+            this.label1.Size = new System.Drawing.Size(86, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Update versions:";
+            this.label1.Text = "Current versions:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(208, 9);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(86, 13);
+            this.label2.Size = new System.Drawing.Size(87, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Current versions:";
+            this.label2.Text = "Update versions:";
             // 
             // tbLog
             // 
@@ -95,7 +95,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tbUpdateVersions);
-            this.Controls.Add(this.tbVersions);
+            this.Controls.Add(this.tbCurrentVersions);
             this.Name = "Main";
             this.Text = "Weather Diary - Updater";
             this.Shown += new System.EventHandler(this.Main_Shown);
@@ -106,7 +106,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox tbVersions;
+        private System.Windows.Forms.TextBox tbCurrentVersions;
         private System.Windows.Forms.TextBox tbUpdateVersions;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;

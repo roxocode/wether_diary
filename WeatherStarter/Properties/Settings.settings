@@ -14,5 +14,8 @@
     <Setting Name="VersionXmlPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">backup\version.xml</Value>
     </Setting>
+    <Setting Name="BackupDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">backup</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

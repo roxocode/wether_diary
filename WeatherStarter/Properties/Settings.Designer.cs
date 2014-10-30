@@ -70,5 +70,17 @@ namespace WeatherStarter.Properties {
                 this["VersionXmlPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("backup")]
+        public string BackupDir {
+            get {
+                return ((string)(this["BackupDir"]));
+            }
+            set {
+                this["BackupDir"] = value;
+            }
+        }
     }
 }

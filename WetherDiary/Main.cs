@@ -116,6 +116,7 @@ namespace WetherDiary
             col.DataPropertyName = "ID";
             col.Name = "ID";
             col.Width = 40;
+            col.Visible = false;
             dgvMain.Columns.Add(col);
 
             col = new DataGridViewTextBoxColumn();
@@ -175,6 +176,8 @@ namespace WetherDiary
             falloutsImageColumn.Name = "FalloutsImg";
             falloutsImageColumn.HeaderText = "Осадки";
             dgvMain.Columns.Add(falloutsImageColumn);
+            // Убираем иконку (красный крестик) для ячейки без значения
+            dgvMain.Columns["FalloutsImg"].DefaultCellStyle.NullValue = null;
             
             // Columns color 
             // TODO: make setting by user
@@ -182,8 +185,9 @@ namespace WetherDiary
             dgvMain.Columns[2].DefaultCellStyle.BackColor = Color.Azure;
 
             #endregion
-            
-            // TODO: set by user in preference
+
+            cbMeasurePeriods_SelectedIndexChanged(null, EventArgs.Empty);
+            /*
             int maxRowCount = 7;
             string sqlMeasures = string.Format("SELECT * FROM weather WHERE date(Measure_Date) <= date('{0}') ORDER BY Measure_Date DESC LIMIT {1}", 
                 dtpDate.Value.ToString("yyyy-MM-dd"), 
@@ -192,15 +196,13 @@ namespace WetherDiary
             
             // Добавляем колонку с иконками осадков
             // TODO: Сделать обновление после изменения замеров
-            dt.Columns.Add(new DataColumn("FalloutsImg", typeof(Image)));
-            // Убираем иконку (красный крестик) для ячейки без значения
-            dgvMain.Columns["FalloutsImg"].DefaultCellStyle.NullValue = null;
             UpdateFalloutsIconColumn(dt);
             
             BindingSource bs = new BindingSource();
             bs.DataSource = dt;
             dgvMain.DataSource = bs;
-
+            */
+            
             // Для перерисовки графика при запуске программы
             CurrentDateChanged(this, EventArgs.Empty);
 
@@ -217,6 +219,10 @@ namespace WetherDiary
             dgvMain.CellMouseDoubleClick += dgvMain_CellMouseDoubleClick;
 
             dtpDate.ValueChanged += CurrentDateChanged;
+            // Needed for stop throwing ValueChanged event while browsing DateTimePicker
+            dtpDate.DropDown += (s, e) => { dtpDate.ValueChanged -= CurrentDateChanged; };
+            dtpDate.CloseUp += (s, e) => { dtpDate.ValueChanged += CurrentDateChanged; CurrentDateChanged(this, EventArgs.Empty); };
+
             cbChartPeriod.SelectedIndexChanged += cbChartPeriod_SelectedIndexChanged;
             cbMeasurePeriods.SelectedIndexChanged += cbMeasurePeriods_SelectedIndexChanged;
             dgvYearsDays.SelectionChanged += (s, e) => { dgvYearsDays.ClearSelection(); };
@@ -249,27 +255,33 @@ namespace WetherDiary
             switch (cbMeasurePeriods.SelectedIndex)
             {
                 case 0:
+                    // 7 days
                     ToggleVisiblePeriods(false);
                     sqlMeasures = string.Format("SELECT * FROM weather WHERE date(Measure_Date) <= date('{0}') ORDER BY Measure_Date DESC LIMIT {1}",
                         dtpDate.Value.ToString("yyyy-MM-dd"),
                         7);
                     bs.DataSource = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlMeasures));
+                    UpdateFalloutsIconColumn(bs.DataSource as DataTable);
                     dgvMain.DataSource = bs;
                     break;
                 case 1:
+                    // 1 month
                     ToggleVisiblePeriods(false);
                     sqlMeasures = string.Format("SELECT * FROM weather WHERE date(Measure_Date) <= date('{0}') ORDER BY Measure_Date DESC LIMIT {1}",
                         dtpDate.Value.ToString("yyyy-MM-dd"),
-                        10);
+                        30);
                     bs.DataSource = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlMeasures));
+                    UpdateFalloutsIconColumn(bs.DataSource as DataTable);
                     dgvMain.DataSource = bs;
                     break;
                 case 2:
+                    // Custom period
                     ToggleVisiblePeriods(true);
                     sqlMeasures = string.Format("SELECT * FROM weather WHERE date(Measure_Date) BETWEEN date('{0}') AND date('{1}') ORDER BY Measure_Date DESC",
                         dtpMesPeriodFrom.Value.ToString("yyyy-MM-dd"),
                         dtpMesPeriodTo.Value.ToString("yyyy-MM-dd"));
                     bs.DataSource = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlMeasures));
+                    UpdateFalloutsIconColumn(bs.DataSource as DataTable);
                     dgvMain.DataSource = bs;
                     break;
             }
@@ -379,14 +391,6 @@ namespace WetherDiary
         }
 
         /// <summary>
-        /// Обновление данных и графика
-        /// </summary>
-        void UpdateChart()
-        {
-            // need or not ?
-        }
-
-        /// <summary>
         /// Adopt to row changed
         /// </summary>
         void CellChanged(object sender, EventArgs e)
@@ -452,7 +456,36 @@ namespace WetherDiary
         void CurrentDateChanged(object sender, EventArgs e)
         {
             gbLastMonthTemperature.Text = dtpDate.Value.ToString("MMMM");
-            // Максимальная и минимальная температуры за выбранный месяц
+            
+            MaxAndMinTemperatureCurMonth();
+
+            TemperatureForAllYears();
+
+            CountRainyDaysCurMonth();
+
+            // Выделяем строку с выбранной датой
+            DateTime selectedDate;
+            for (int i = 0; i < dgvMain.Rows.Count; i++)
+            {
+                selectedDate = Convert.ToDateTime(dgvMain.Rows[i].Cells["Measure_Date"].Value);
+                if (selectedDate.ToShortDateString() == dtpDate.Value.ToShortDateString())
+                {
+                    dgvMain.Rows[i].Selected = true;
+                    dgvMain.FirstDisplayedScrollingRowIndex = i;
+                }
+            }
+
+            // Перерисовываем график
+            cbChartPeriod_SelectedIndexChanged(dtpDate, EventArgs.Empty);
+            // Refresh table with measurements
+            cbMeasurePeriods_SelectedIndexChanged(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Maximum and minimum temperature for current month
+        /// </summary>
+        private void MaxAndMinTemperatureCurMonth()
+        {
             string sql = @"SELECT 
 	                MIN(Temperature) AS MinTemperature, 
 	                MAX(Temperature) AS MaxTemperature,
@@ -461,7 +494,7 @@ namespace WetherDiary
                 WHERE 
                 CAST(strftime('%m', Measure_Date) AS INTEGER) = '{0}' 
                 AND CAST(strftime('%Y', Measure_Date) AS INTEGER) = '{1}'";
-            SQLiteCommand temperatureCmd = new SQLiteCommand(string.Format(sql, 
+            SQLiteCommand temperatureCmd = new SQLiteCommand(string.Format(sql,
                 new object[] 
                 {
                     dtpDate.Value.Month,
@@ -472,8 +505,13 @@ namespace WetherDiary
             lblMaxTemperature.Text = minMaxTempRow[1].ToString();
             double avgTemperature = (minMaxTempRow[2] == DBNull.Value) ? 0 : Convert.ToDouble(minMaxTempRow[2]);
             lblAvgTemperature.Text = avgTemperature.ToString("##.#");
+        }
 
-            // Температуры за все года аналогичного дня
+        /// <summary>
+        /// Temperatures for all years
+        /// </summary>
+        private void TemperatureForAllYears()
+        {
             string yearDaysSql = @"
                 SELECT strftime('%Y', Measure_Date) AS [Year], Temperature 
                 FROM weather 
@@ -492,40 +530,6 @@ namespace WetherDiary
             // Помечаем ячейку с минимальной и максимальной температурой 
             if (yearDaysTable.Rows.Count >= 2)
                 MarkMinAndMaxTemp();
-
-            // Выделяем строку с выбранной датой
-            DateTime selectedDate;
-            for (int i = 0; i < dgvMain.Rows.Count; i++)
-            {
-                selectedDate = Convert.ToDateTime(dgvMain.Rows[i].Cells["Measure_Date"].Value);
-                if (selectedDate.ToShortDateString() == dtpDate.Value.ToShortDateString())
-                {
-                    dgvMain.Rows[i].Selected = true;
-                    dgvMain.FirstDisplayedScrollingRowIndex = i;
-                }
-            }
-
-            // Количество дождливых дней
-            string rainyDaysSql = @"
-                SELECT
-	                COUNT(DISTINCT fs.Measure_ID) AS RainyDays
-                FROM fallouts fs 
-                INNER JOIN weather w ON fs.Measure_ID = w.ID
-                WHERE 
-	                fs.Fallout_ID IN (8, 9, 10, 14, 15)
-	                AND CAST(strftime('%m', Measure_Date) AS INTEGER) = {0}
-	                AND CAST(strftime('%Y', Measure_Date) AS INTEGER) = {1}";
-            SQLiteCommand rainyDaysCmd = new SQLiteCommand(string.Format(rainyDaysSql,
-                new object[]
-                {
-                    dtpDate.Value.Month,
-                    dtpDate.Value.Year
-                }));
-            DataRow rainyDays = this._engine.ExecuteQueryReturnDataRow(rainyDaysCmd);
-            lblRainyDays.Text = rainyDays["RainyDays"].ToString();
-
-            // Перерисовываем график
-            cbChartPeriod_SelectedIndexChanged(dtpDate, EventArgs.Empty);
         }
 
         /// <summary>
@@ -552,6 +556,30 @@ namespace WetherDiary
             }
         }
 
+        /// <summary>
+        /// Quantity of days with precipitations in current month
+        /// </summary>
+        private void CountRainyDaysCurMonth()
+        {
+            string rainyDaysSql = @"
+                SELECT
+	                COUNT(DISTINCT fs.Measure_ID) AS RainyDays
+                FROM fallouts fs 
+                INNER JOIN weather w ON fs.Measure_ID = w.ID
+                WHERE 
+	                fs.Fallout_ID IN (8, 9, 10, 14, 15)
+	                AND CAST(strftime('%m', Measure_Date) AS INTEGER) = {0}
+	                AND CAST(strftime('%Y', Measure_Date) AS INTEGER) = {1}";
+            SQLiteCommand rainyDaysCmd = new SQLiteCommand(string.Format(rainyDaysSql,
+                new object[]
+                {
+                    dtpDate.Value.Month,
+                    dtpDate.Value.Year
+                }));
+            DataRow rainyDays = this._engine.ExecuteQueryReturnDataRow(rainyDaysCmd);
+            lblRainyDays.Text = rainyDays["RainyDays"].ToString();
+        }
+
         private void SaveToDB()
         {
             DataTable weatherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
@@ -570,7 +598,6 @@ namespace WetherDiary
         /// </summary>
         private void CloudToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Get DataTable
             DataGridViewComboBoxColumn cbc = dgvMain.Columns["Cloud_ID"] as DataGridViewComboBoxColumn;
             DataTable dt = cbc.DataSource as DataTable;
             dt.TableName = "cloud";
@@ -584,10 +611,6 @@ namespace WetherDiary
         /// </summary>
         private void FalloutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // TODO: 2014-04-22 Отображать кнопку для выбора пути в колонке с иконками осадков (Открывать по другому, для правильного отображения?)
-            // Get DataTable
-            //DataGridViewComboBoxColumn cbc = dgvMain.Columns["Fallout_ID"] as DataGridViewComboBoxColumn;
-            //DataTable dt = cbc.DataSource as DataTable;
             DataTable dt = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT * FROM fallout"));
             dt.TableName = "fallout";
             Book precipitation = new Book(dt);
@@ -600,7 +623,6 @@ namespace WetherDiary
         /// </summary>
         private void WindToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Get DataTable
             DataGridViewComboBoxColumn cbc = dgvMain.Columns["Wind_ID"] as DataGridViewComboBoxColumn;
             DataTable dt = cbc.DataSource as DataTable;
             dt.TableName = "wind";
@@ -614,7 +636,6 @@ namespace WetherDiary
         /// </summary>
         private void WindForceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Get DataTable
             DataTable dt = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT * FROM windForce"));
             dt.TableName = "windForce";
             Book windForce = new Book(dt);
@@ -658,7 +679,9 @@ namespace WetherDiary
                 }
                 this.SaveToDB();
                 // и получаем ее ID
-                MessageBox.Show(String.Format("New row ID: {0}", weatherTable.Rows[newRowIndex]["ID"]));
+                #if DEBUG
+                    MessageBox.Show(String.Format("New row ID: {0}", weatherTable.Rows[newRowIndex]["ID"]));
+                #endif
                 addMeasureForm.SaveFallouts(weatherTable.Rows[newRowIndex]["ID"]);
                 //((BindingSource)dgvMain.DataSource).ResetBindings(true);
                 // Update chart
@@ -674,6 +697,7 @@ namespace WetherDiary
         /// </summary>
         private void UpdateFalloutsIconColumn(DataTable dt)
         {
+            dt.Columns.Add(new DataColumn("FalloutsImg", typeof(Image)));
             foreach (DataRow dr in dt.Rows)
             {
                 DataTable dtIconPaths = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(string.Format(

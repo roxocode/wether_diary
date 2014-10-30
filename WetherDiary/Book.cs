@@ -49,6 +49,8 @@ namespace WetherDiary
                 dgvBook.Columns.Add(buttonColumn);
             }
             dgvBook.CellContentClick += dgvBook_CellContentClick;
+
+            dgvBook.Rows[0].Cells["SelectIconBtn"].ToolTipText = string.Empty;
         }
 
         void dgvBook_CellContentClick(object sender, DataGridViewCellEventArgs e)

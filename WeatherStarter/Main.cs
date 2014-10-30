@@ -9,6 +9,7 @@ using System.Net;
 using System.Xml;
 using System.Windows.Forms;
 using System.Reflection;
+using System.IO;
 
 /*
  * WeatherStarter used to checking for updates, updating and starting main application
@@ -30,6 +31,7 @@ namespace WeatherStarter
         public Main()
         {
             InitializeComponent();
+            this.Icon = WeatherStarter.Properties.Resources.WeatherDiary;
         }
 
         private string GetUpdateTextVersions()
@@ -81,6 +83,7 @@ namespace WeatherStarter
 
         private void RunWeatherDiaryAndExit()
         {
+            this.Hide();
             System.Diagnostics.ProcessStartInfo mainApp = new System.Diagnostics.ProcessStartInfo("WetherDiary.exe");
             System.Diagnostics.Process.Start(mainApp);
             Application.Exit();
@@ -90,15 +93,17 @@ namespace WeatherStarter
         {
             try
             {
+                Directory.CreateDirectory(Properties.Settings.Default.BackupDir);
                 using (WebClient wc = new WebClient())
                 {
                     wc.Credentials = new NetworkCredential(Properties.Settings.Default.UserFTP, Properties.Settings.Default.PasswordFTP);
                     tbLog.AppendLine("Downloading file 'version.xml'...");
-                    wc.DownloadFile(String.Format("{0}version.xml", Properties.Settings.Default.UpdateURI), "backup\\version.xml");
+                    wc.DownloadFile(String.Format("{0}version.xml", Properties.Settings.Default.UpdateURI), Properties.Settings.Default.VersionXmlPath);
                 }
             }
             catch (WebException ex)
             {
+                // TODO: save log to file 'start.log'
                 tbLog.AppendLine("Can't download file 'version.xml'");
                 RunWeatherDiaryAndExit();
                 return;
@@ -106,7 +111,7 @@ namespace WeatherStarter
 
             tbLog.AppendLine("File 'version.xml' was downloaded");
             // TODO: disable selection on tbVersions
-            tbVersions.Text = GetCurrentTextVersions();
+            tbCurrentVersions.Text = GetCurrentTextVersions();
             tbUpdateVersions.Text = GetUpdateTextVersions();
 
             // Structure of update packege:
@@ -129,7 +134,7 @@ namespace WeatherStarter
                             tbLog.AppendLine(string.Format("Downloading file '{0}' (version: {1})...", uf.name, uf.ver));
                             wc.DownloadFile(
                                 string.Format("{0}{1}", consts.UpdateURI, uf.name),
-                                string.Format("backup\\{0}", uf.name));
+                                string.Format("{0}\\{1}", consts.BackupDir, uf.name));
                         }
                     }
                     catch (WebException ex)
@@ -140,7 +145,7 @@ namespace WeatherStarter
 
                     tbLog.AppendLine(string.Format("File '{0}' was downloaded", uf.name));
                     // check verison one more time
-                    Version downloadedVer = AssemblyName.GetAssemblyName(string.Format("backup\\{0}", uf.name)).Version;
+                    Version downloadedVer = AssemblyName.GetAssemblyName(string.Format("{0}\\{1}", consts.BackupDir, uf.name)).Version;
                     if (!uf.ver.Equals(downloadedVer))
                     {
                         // TODO: write down to log file or/and send by e-mail
@@ -151,19 +156,20 @@ namespace WeatherStarter
                         tbLog.AppendLine(string.Format("Checking for file '{0}' versions appropriates was completed", uf.name));
 
                     // Make backup (copy file to backup directory with .bak extension)
-                    System.IO.File.Copy(uf.name, string.Format("backup\\{0}.bak", uf.name), true);
+                    System.IO.File.Copy(uf.name, string.Format("{0}\\{1}.bak", consts.BackupDir, uf.name), true);
                     // copy updated file
-                    System.IO.File.Copy(string.Format("backup\\{0}", uf.name), uf.name, true);
+                    System.IO.File.Copy(string.Format("{0}\\{1}", consts.BackupDir, uf.name), uf.name, true);
                     // delete update file
-                    System.IO.File.Delete(string.Format("backup\\{0}", uf.name));
+                    System.IO.File.Delete(string.Format("{0}\\{1}", consts.BackupDir, uf.name));
                     tbLog.AppendLine(string.Format("File '{0}' was updated", uf.name));
+                    MessageBox.Show("The application was updated");
                 }
                 else
                     tbLog.AppendLine(string.Format("File '{0}' is already updated", uf.name));
             }
 
             #if DEBUG
-            MessageBox.Show("Done");
+            MessageBox.Show("The application was updated");
             #endif
             
             RunWeatherDiaryAndExit();
