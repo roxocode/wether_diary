@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.dtpDate = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.dgvMain = new System.Windows.Forms.DataGridView();
@@ -256,11 +257,14 @@
             // 
             // btnAddTest
             // 
-            this.btnAddTest.Location = new System.Drawing.Point(516, 141);
+            this.btnAddTest.Image = ((System.Drawing.Image)(resources.GetObject("btnAddTest.Image")));
+            this.btnAddTest.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnAddTest.Location = new System.Drawing.Point(489, 99);
             this.btnAddTest.Name = "btnAddTest";
-            this.btnAddTest.Size = new System.Drawing.Size(75, 23);
+            this.btnAddTest.Size = new System.Drawing.Size(92, 36);
             this.btnAddTest.TabIndex = 9;
             this.btnAddTest.Text = "Добавить";
+            this.btnAddTest.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnAddTest.UseVisualStyleBackColor = true;
             this.btnAddTest.Click += new System.EventHandler(this.btnAddMeasure_Click);
             // 
@@ -324,7 +328,7 @@
             // lblMesPeriodTo
             // 
             this.lblMesPeriodTo.AutoSize = true;
-            this.lblMesPeriodTo.Location = new System.Drawing.Point(442, 382);
+            this.lblMesPeriodTo.Location = new System.Drawing.Point(451, 382);
             this.lblMesPeriodTo.Name = "lblMesPeriodTo";
             this.lblMesPeriodTo.Size = new System.Drawing.Size(19, 13);
             this.lblMesPeriodTo.TabIndex = 20;
@@ -343,9 +347,9 @@
             // 
             // dtpMesPeriodTo
             // 
-            this.dtpMesPeriodTo.Location = new System.Drawing.Point(467, 376);
+            this.dtpMesPeriodTo.Location = new System.Drawing.Point(476, 376);
             this.dtpMesPeriodTo.Name = "dtpMesPeriodTo";
-            this.dtpMesPeriodTo.Size = new System.Drawing.Size(102, 20);
+            this.dtpMesPeriodTo.Size = new System.Drawing.Size(111, 20);
             this.dtpMesPeriodTo.TabIndex = 18;
             this.dtpMesPeriodTo.Visible = false;
             // 
@@ -353,7 +357,7 @@
             // 
             this.dtpMesPeriodFrom.Location = new System.Drawing.Point(334, 376);
             this.dtpMesPeriodFrom.Name = "dtpMesPeriodFrom";
-            this.dtpMesPeriodFrom.Size = new System.Drawing.Size(102, 20);
+            this.dtpMesPeriodFrom.Size = new System.Drawing.Size(111, 20);
             this.dtpMesPeriodFrom.TabIndex = 19;
             this.dtpMesPeriodFrom.Visible = false;
             // 

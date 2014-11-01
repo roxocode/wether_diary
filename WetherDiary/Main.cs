@@ -684,9 +684,8 @@ namespace WetherDiary
                 #endif
                 addMeasureForm.SaveFallouts(weatherTable.Rows[newRowIndex]["ID"]);
                 //((BindingSource)dgvMain.DataSource).ResetBindings(true);
-                // Update chart
-                cbChartPeriod_SelectedIndexChanged(null, EventArgs.Empty);
-                ((BindingSource)dgvMain.DataSource).Sort = "Measure_Date DESC";
+                // Updating
+                CurrentDateChanged(this, EventArgs.Empty);
             }
             addMeasureForm.Close();
             addMeasureForm.Dispose();
