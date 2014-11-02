@@ -91,7 +91,7 @@ namespace DBEngine
                     SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
                     adapter.Fill(resTable);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw;
                 }

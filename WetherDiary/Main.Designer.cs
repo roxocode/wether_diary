@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.dtpDate = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.dgvMain = new System.Windows.Forms.DataGridView();
@@ -257,7 +256,7 @@
             // 
             // btnAddTest
             // 
-            this.btnAddTest.Image = ((System.Drawing.Image)(resources.GetObject("btnAddTest.Image")));
+            this.btnAddTest.Image = global::WetherDiary.Properties.Resources.add;
             this.btnAddTest.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnAddTest.Location = new System.Drawing.Point(489, 99);
             this.btnAddTest.Name = "btnAddTest";

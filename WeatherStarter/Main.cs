@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Net;
 using System.Xml;
 using System.Windows.Forms;
@@ -27,6 +22,7 @@ namespace WeatherStarter
             public string crc;
         }
         List<UpdateFile> updateVersions;
+        string updateDescr = string.Empty;
         
         public Main()
         {
@@ -54,7 +50,7 @@ namespace WeatherStarter
             XmlDocument versionDoc = new XmlDocument();
             versionDoc.Load(Properties.Settings.Default.VersionXmlPath);
             // TODO: Show what's new section on the form
-            //MessageBox.Show(versionDoc.SelectSingleNode("/update/description").InnerText);
+            this.updateDescr = versionDoc.SelectSingleNode("/update/description").InnerText;
             // Get files section
             foreach (XmlNode node in versionDoc.SelectNodes("/update/files//file"))
             {
@@ -162,14 +158,17 @@ namespace WeatherStarter
                     // delete update file
                     System.IO.File.Delete(string.Format("{0}\\{1}", consts.BackupDir, uf.name));
                     tbLog.AppendLine(string.Format("File '{0}' was updated", uf.name));
-                    MessageBox.Show("The application was updated");
+                    if (this.updateDescr == string.Empty)
+                        MessageBox.Show("This application was updated.");
+                    else
+                        MessageBox.Show(string.Format("This application was updated.{0}What's new:{0}{1}", Environment.NewLine, this.updateDescr));
                 }
                 else
                     tbLog.AppendLine(string.Format("File '{0}' is already updated", uf.name));
             }
 
             #if DEBUG
-            MessageBox.Show("The application was updated");
+            MessageBox.Show("This application was updated");
             #endif
             
             RunWeatherDiaryAndExit();

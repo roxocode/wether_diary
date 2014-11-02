@@ -82,6 +82,9 @@
   <ItemGroup>
     <None Include="WeatherDiary.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\add.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>UpdateMaker</PostBuildEvent>
