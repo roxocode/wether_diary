@@ -334,10 +334,12 @@ namespace WetherDiary
                                             dtpDate.Value.Month);
                     DataTable monthsData = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlGetMonths));
                     // года за которые есть замеры
-                    var res = from row in monthsData.AsEnumerable()
-                              group row by row.Field<string>("Year") into grp
-                              select grp.Key;
-                    string[] years = res.ToArray();
+                    string[] years = 
+                        (from row in monthsData.AsEnumerable()
+                        group row by row.Field<string>("Year") 
+                        into grp
+                        orderby grp.Key
+                        select grp.Key).ToArray();
 
                     // формат t['год'] = { 'день' = 'температура' }
                     Dictionary<short, Dictionary<int, short>> t = new Dictionary<short, Dictionary<int, short>>();
@@ -420,20 +422,29 @@ namespace WetherDiary
         /// </summary>
         void deleteRow(object sender, EventArgs e)
         {
-            int deleteRowIndex = dgvMain.Rows.GetFirstRow(DataGridViewElementStates.Selected);
-            if (deleteRowIndex > -1)
+            DialogResult dr = MessageBox.Show("Вы действительно хотите удалить выделенный замер?",
+                "Удалить замер?",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+            if (dr == DialogResult.Yes)
             {
-                DataTable weatherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
-                weatherTable.TableName = this.tableName;
-                // удаляем осадки (fallouts)
-                string deleteFallouts = string.Format("DELETE FROM {0} WHERE Measure_ID = {1}", 
-                    "fallouts",
-                    weatherTable.Rows[deleteRowIndex]["ID"]);
-                this._engine.ExecuteQuery(new SQLiteCommand(deleteFallouts));
-                dgvMain.Rows.RemoveAt(deleteRowIndex);
-                this._engine.Update(weatherTable);
-                // Перерисовываем график
-                cbChartPeriod_SelectedIndexChanged(dtpDate, EventArgs.Empty);                
+                int deleteRowIndex = dgvMain.Rows.GetFirstRow(DataGridViewElementStates.Selected);
+                if (deleteRowIndex > -1)
+                {
+                    DataTable weatherTable = (dgvMain.DataSource as BindingSource).DataSource as DataTable;
+                    weatherTable.TableName = this.tableName;
+                    // удаляем осадки (fallouts)
+                    string deleteFallouts = string.Format("DELETE FROM {0} WHERE Measure_ID = {1}",
+                        "fallouts",
+                        weatherTable.Rows[deleteRowIndex]["ID"]);
+                    this._engine.ExecuteQuery(new SQLiteCommand(deleteFallouts));
+                    dgvMain.Rows.RemoveAt(deleteRowIndex);
+                    this._engine.Update(weatherTable);
+                    // redraw chart, update precipitation count and max, min and avg temp.
+                    cbChartPeriod_SelectedIndexChanged(dtpDate, EventArgs.Empty);
+                    RainyDaysCurMonth();
+                    MaxMinAgvTemperatureCurMonth();
+                }
             }
         }
 
@@ -457,11 +468,11 @@ namespace WetherDiary
         {
             gbLastMonthTemperature.Text = dtpDate.Value.ToString("MMMM");
             
-            MaxAndMinTemperatureCurMonth();
+            MaxMinAgvTemperatureCurMonth();
 
             TemperatureForAllYears();
 
-            CountRainyDaysCurMonth();
+            RainyDaysCurMonth();
 
             // Выделяем строку с выбранной датой
             DateTime selectedDate;
@@ -482,9 +493,9 @@ namespace WetherDiary
         }
 
         /// <summary>
-        /// Maximum and minimum temperature for current month
+        /// Maximum, minimum and average temperature for current month
         /// </summary>
-        private void MaxAndMinTemperatureCurMonth()
+        private void MaxMinAgvTemperatureCurMonth()
         {
             string sql = @"SELECT 
 	                MIN(Temperature) AS MinTemperature, 
@@ -559,7 +570,7 @@ namespace WetherDiary
         /// <summary>
         /// Quantity of days with precipitations in current month
         /// </summary>
-        private void CountRainyDaysCurMonth()
+        private void RainyDaysCurMonth()
         {
             string rainyDaysSql = @"
                 SELECT
@@ -654,7 +665,10 @@ namespace WetherDiary
                 AddMeasure addMeasureForm = new AddMeasure(dgvMain.DataSource, ((DataRowView)dgvMain.Rows[e.RowIndex].DataBoundItem).Row);
                 //addMeasureForm.Owner = this;
                 if (addMeasureForm.ShowDialog() == DialogResult.OK)
+                {
                     this.SaveToDB();
+                    CurrentDateChanged(null, EventArgs.Empty);
+                }
                 addMeasureForm.Close();
                 addMeasureForm.Dispose();
             }
@@ -685,7 +699,7 @@ namespace WetherDiary
                 addMeasureForm.SaveFallouts(weatherTable.Rows[newRowIndex]["ID"]);
                 //((BindingSource)dgvMain.DataSource).ResetBindings(true);
                 // Updating
-                CurrentDateChanged(this, EventArgs.Empty);
+                CurrentDateChanged(null, EventArgs.Empty);
             }
             addMeasureForm.Close();
             addMeasureForm.Dispose();

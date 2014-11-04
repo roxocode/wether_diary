@@ -35,7 +35,7 @@ namespace WetherDiary
             cbWind.DisplayMember = "Name";
             cbWind.ValueMember = "ID";
             // Сила ветра
-            cbWindForce.DataSource = engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT ID, Name FROM windForce"));
+            cbWindForce.DataSource = engine.AddBlankRow(engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT ID, Name FROM windForce")));
             cbWindForce.DisplayMember = "Name";
             cbWindForce.ValueMember = "ID";
             // Осадки
@@ -55,14 +55,8 @@ namespace WetherDiary
             dgvFallouts.AllowUserToAddRows = false;
             dgvFallouts.CellBorderStyle = DataGridViewCellBorderStyle.None;
             dgvFallouts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            // Add columns
-            /*
-            var measureIDColumn = new DataGridViewTextBoxColumn();
-            measureIDColumn.DataPropertyName = "Measure_ID";
-            measureIDColumn.Name = "Measure_ID";
-            measureIDColumn.ValueType = typeof(int);
-            dgvFallouts.Columns.Add(measureIDColumn);
-            */
+            
+            // Precipitation table
             var flColumn = new DataGridViewTextBoxColumn();
             flColumn.DataPropertyName = "Name";
             flColumn.Name = "Name";
@@ -75,19 +69,7 @@ namespace WetherDiary
             flIconColumn.HeaderText = "Иконка";
             flIconColumn.Width = 20;
             dgvFallouts.Columns.Add(flIconColumn);
-                        
-            /*
-            var falloutColumn = new DataGridViewComboBoxColumn();
-            falloutColumn.DataSource = engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT ID, Name FROM fallout"));
-            falloutColumn.Width = 125;
-            falloutColumn.DataPropertyName = "Fallout_ID";
-            falloutColumn.Name = "Fallout_ID";
-            falloutColumn.HeaderText = "Осадки";
-            falloutColumn.DisplayMember = "Name";
-            falloutColumn.ValueMember = "ID";
-            dgvFallouts.Columns.Add(falloutColumn);
-            */
-
+            
             errorProvider = new ErrorProvider();
             tbTemperature.Validating += new CancelEventHandler(tbTemperature_Validating);
             dgvFallouts.DataSource = this.engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT fs.ID, fs.Measure_ID, fs.Fallout_ID, f.Name, f.IconPath, NULL AS FalloutIcon FROM fallouts fs INNER JOIN fallout f ON fs.Fallout_ID = f.ID WHERE fs.Measure_ID IS NULL"));
@@ -198,7 +180,7 @@ namespace WetherDiary
             {
                 if (this.parentSource != null)
                 {
-                    if (this.hasMeasureWithDate(dtpDate.Value))
+                    if (this.checkMeasureDateDublicate(dtpDate.Value))
                     {
                         MessageBox.Show(string.Format("Замер с датой '{0}' уже существует!", 
                             dtpDate.Value.ToString("yyyy-MM-dd")), 
@@ -227,7 +209,7 @@ namespace WetherDiary
         /// <summary>
         /// Проверка на существование записи с датой date
         /// </summary>
-        private bool hasMeasureWithDate(DateTime date)
+        private bool checkMeasureDateDublicate(DateTime date)
         {
             SQLiteCommand hasMeasure = new SQLiteCommand(
                        string.Format("SELECT 1 FROM weather WHERE date(Measure_Date) = '{0}'", date.ToString("yyyy-MM-dd")));
