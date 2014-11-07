@@ -227,6 +227,39 @@ namespace WetherDiary
             cbMeasurePeriods.SelectedIndexChanged += cbMeasurePeriods_SelectedIndexChanged;
             dgvYearsDays.SelectionChanged += (s, e) => { dgvYearsDays.ClearSelection(); };
 
+            // TODO 2014-11-07: test Maybe extract to method
+            this.Load += (s, e) => 
+            {
+                // Restore form position from user settings (Settings.settings)
+                this.WindowState = Properties.Settings.Default.WindowState;
+                this.Location = Properties.Settings.Default.WindowLocation;
+                this.Size = Properties.Settings.Default.WindowSize;
+            };
+            this.FormClosing += (s, e) => 
+            {
+                // Save current form position to user settings (Settings.settings)
+                if (this.WindowState == FormWindowState.Maximized)
+                {
+                    Properties.Settings.Default.WindowState = FormWindowState.Maximized;
+                    Properties.Settings.Default.WindowLocation = RestoreBounds.Location;
+                    Properties.Settings.Default.WindowSize = RestoreBounds.Size;
+                }
+                else if (this.WindowState == FormWindowState.Minimized)
+                {
+                    Properties.Settings.Default.WindowState = FormWindowState.Normal;
+                    Properties.Settings.Default.WindowLocation = RestoreBounds.Location;
+                    Properties.Settings.Default.WindowSize = RestoreBounds.Size;
+                }
+                else
+                {
+                    Properties.Settings.Default.WindowState = FormWindowState.Normal;
+                    Properties.Settings.Default.WindowLocation = this.Location;
+                    Properties.Settings.Default.WindowSize = this.Size;
+                }
+                Properties.Settings.Default.Save(); 
+            };
+            // test
+
             #endregion
         }
 

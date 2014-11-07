@@ -5,6 +5,7 @@ using System.Xml;
 using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
+using WeatherStarter.Properties;
 
 /*
  * WeatherStarter used to checking for updates, updating and starting main application
@@ -48,7 +49,7 @@ namespace WeatherStarter
             List<UpdateFile> res = new List<UpdateFile>();
             // Parse XML file (using XPath)
             XmlDocument versionDoc = new XmlDocument();
-            versionDoc.Load(Properties.Settings.Default.VersionXmlPath);
+            versionDoc.Load(Settings.Default.VersionXmlPath);
             // TODO: Show what's new section on the form
             this.updateDescr = versionDoc.SelectSingleNode("/update/description").InnerText;
             // Get files section
@@ -89,12 +90,12 @@ namespace WeatherStarter
         {
             try
             {
-                Directory.CreateDirectory(Properties.Settings.Default.BackupDir);
+                Directory.CreateDirectory(Settings.Default.BackupDir);
                 using (WebClient wc = new WebClient())
                 {
-                    wc.Credentials = new NetworkCredential(Properties.Settings.Default.UserFTP, Properties.Settings.Default.PasswordFTP);
+                    wc.Credentials = new NetworkCredential(Settings.Default.UserFTP, Settings.Default.PasswordFTP);
                     tbLog.AppendLine("Downloading file 'version.xml'...");
-                    wc.DownloadFile(String.Format("{0}version.xml", Properties.Settings.Default.UpdateURI), Properties.Settings.Default.VersionXmlPath);
+                    wc.DownloadFile(String.Format("{0}version.xml", Settings.Default.UpdateURI), Settings.Default.VersionXmlPath);
                 }
             }
             catch (WebException ex)
@@ -113,7 +114,6 @@ namespace WeatherStarter
             // Structure of update packege:
             // version.xml (XML file with versions data, crc sums)
             // WeatherDiary.exe or/and DBEngine.dll
-            Properties.Settings consts = Properties.Settings.Default;
 
             List<UpdateFile> updateFileList = GetUpdateVersions();
             foreach (UpdateFile uf in updateFileList)
@@ -126,11 +126,11 @@ namespace WeatherStarter
                     {
                         using (WebClient wc = new WebClient())
                         {
-                            wc.Credentials = new NetworkCredential(consts.UserFTP, consts.PasswordFTP);
+                            wc.Credentials = new NetworkCredential(Settings.Default.UserFTP, Settings.Default.PasswordFTP);
                             tbLog.AppendLine(string.Format("Downloading file '{0}' (version: {1})...", uf.name, uf.ver));
                             wc.DownloadFile(
-                                string.Format("{0}{1}", consts.UpdateURI, uf.name),
-                                string.Format("{0}\\{1}", consts.BackupDir, uf.name));
+                                string.Format("{0}{1}", Settings.Default.UpdateURI, uf.name),
+                                string.Format("{0}\\{1}", Settings.Default.BackupDir, uf.name));
                         }
                     }
                     catch (WebException ex)
@@ -141,7 +141,7 @@ namespace WeatherStarter
 
                     tbLog.AppendLine(string.Format("File '{0}' was downloaded", uf.name));
                     // check verison one more time
-                    Version downloadedVer = AssemblyName.GetAssemblyName(string.Format("{0}\\{1}", consts.BackupDir, uf.name)).Version;
+                    Version downloadedVer = AssemblyName.GetAssemblyName(string.Format("{0}\\{1}", Settings.Default.BackupDir, uf.name)).Version;
                     if (!uf.ver.Equals(downloadedVer))
                     {
                         // TODO: write down to log file or/and send by e-mail
@@ -152,11 +152,11 @@ namespace WeatherStarter
                         tbLog.AppendLine(string.Format("Checking for file '{0}' versions appropriates was completed", uf.name));
 
                     // Make backup (copy file to backup directory with .bak extension)
-                    System.IO.File.Copy(uf.name, string.Format("{0}\\{1}.bak", consts.BackupDir, uf.name), true);
+                    System.IO.File.Copy(uf.name, string.Format("{0}\\{1}.bak", Settings.Default.BackupDir, uf.name), true);
                     // copy updated file
-                    System.IO.File.Copy(string.Format("{0}\\{1}", consts.BackupDir, uf.name), uf.name, true);
+                    System.IO.File.Copy(string.Format("{0}\\{1}", Settings.Default.BackupDir, uf.name), uf.name, true);
                     // delete update file
-                    System.IO.File.Delete(string.Format("{0}\\{1}", consts.BackupDir, uf.name));
+                    System.IO.File.Delete(string.Format("{0}\\{1}", Settings.Default.BackupDir, uf.name));
                     tbLog.AppendLine(string.Format("File '{0}' was updated", uf.name));
                     if (this.updateDescr == string.Empty)
                         MessageBox.Show("This application was updated.");
