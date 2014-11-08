@@ -7,6 +7,7 @@ using System.Data.SQLite;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using WetherDiary.UserSettings;
 using DBEngine;
 using DBEngine.Access;
 using System.Linq;
@@ -15,16 +16,14 @@ using System.Linq;
  * Author: alex
  * 5 december 2012
  * 
- * TODO: 2014-10-18 2007 january 30 there is 1900 year in the list
  * TODO: облачность ветер и осадки в виде иконок
  * TODO: день на графике с 1 числа, а не с 0
  * TODO: проставить TabIndex
  * TODO: обработка ошибок RowError при редактировании строк (особено для столбца с датой, выпадающий календарь)
  * TODO: обработка ошибки когда пользователь удаляет запись из справочника которая используется в главной таблице (обработка события DataGridView.DataError)
  * TODO: возможность ввода доробных чисел в поля Температура и Давление (обработка события DataGridView.DataError)
- * TODO: 2013-06-15 возможность сохранять пользовательские настройки (ширина колонок, цвет) в файл (there is article in rsdn)
+ * TODO: 2014-11-08 интерфейс для изменения цвета колонок
  * TODO: возможно для функций выполнения запросов тип аргумента сделать отличным от SQLiteCommand, OleDbCommand etc. сделать полиморфизм
- * TODO: в datetimepicker при смене месяца срабатывает событие valueChange
  * TODO: сделать определенные цвета на графике
  */
 
@@ -187,21 +186,6 @@ namespace WetherDiary
             #endregion
 
             cbMeasurePeriods_SelectedIndexChanged(null, EventArgs.Empty);
-            /*
-            int maxRowCount = 7;
-            string sqlMeasures = string.Format("SELECT * FROM weather WHERE date(Measure_Date) <= date('{0}') ORDER BY Measure_Date DESC LIMIT {1}", 
-                dtpDate.Value.ToString("yyyy-MM-dd"), 
-                maxRowCount);
-            DataTable dt = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlMeasures));
-            
-            // Добавляем колонку с иконками осадков
-            // TODO: Сделать обновление после изменения замеров
-            UpdateFalloutsIconColumn(dt);
-            
-            BindingSource bs = new BindingSource();
-            bs.DataSource = dt;
-            dgvMain.DataSource = bs;
-            */
             
             // Для перерисовки графика при запуске программы
             CurrentDateChanged(this, EventArgs.Empty);
@@ -234,6 +218,10 @@ namespace WetherDiary
                 this.WindowState = Properties.Settings.Default.WindowState;
                 this.Location = Properties.Settings.Default.WindowLocation;
                 this.Size = Properties.Settings.Default.WindowSize;
+
+                // columns
+                string columnsCode = Properties.Settings.Default.GridColumns;
+                Serializer.SetDeserializeColSetting(dgvMain, columnsCode);
             };
             this.FormClosing += (s, e) => 
             {
@@ -256,7 +244,10 @@ namespace WetherDiary
                     Properties.Settings.Default.WindowLocation = this.Location;
                     Properties.Settings.Default.WindowSize = this.Size;
                 }
-                Properties.Settings.Default.Save(); 
+                
+                // Save DataGridView columns setting
+                Properties.Settings.Default.GridColumns = Serializer.GetSerializeColSetting(dgvMain);
+                Properties.Settings.Default.Save();
             };
             // test
 
@@ -692,7 +683,7 @@ namespace WetherDiary
         /// </summary>
         private void dgvMain_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && e.Clicks == 2)
+            if (e.Button == MouseButtons.Left && e.Clicks == 2 && e.RowIndex >= 0)
             {
                 // Convert DataGridViewRow to DataRow
                 AddMeasure addMeasureForm = new AddMeasure(dgvMain.DataSource, ((DataRowView)dgvMain.Rows[e.RowIndex].DataBoundItem).Row);

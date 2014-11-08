@@ -94,5 +94,17 @@ namespace WetherDiary.Properties {
                 this["WindowState"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GridColumns {
+            get {
+                return ((string)(this["GridColumns"]));
+            }
+            set {
+                this["GridColumns"] = value;
+            }
+        }
     }
 }
