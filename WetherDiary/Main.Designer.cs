@@ -351,6 +351,7 @@
             this.dtpMesPeriodTo.Size = new System.Drawing.Size(111, 20);
             this.dtpMesPeriodTo.TabIndex = 18;
             this.dtpMesPeriodTo.Visible = false;
+            this.dtpMesPeriodTo.ValueChanged += new System.EventHandler(this.dtpMesPeriod_ValueChanged);
             // 
             // dtpMesPeriodFrom
             // 
@@ -359,6 +360,7 @@
             this.dtpMesPeriodFrom.Size = new System.Drawing.Size(111, 20);
             this.dtpMesPeriodFrom.TabIndex = 19;
             this.dtpMesPeriodFrom.Visible = false;
+            this.dtpMesPeriodFrom.ValueChanged += new System.EventHandler(this.dtpMesPeriod_ValueChanged);
             // 
             // label5
             // 

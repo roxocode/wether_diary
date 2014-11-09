@@ -16,6 +16,7 @@ using System.Linq;
  * Author: alex
  * 5 december 2012
  * 
+ * TODO: 2014-11-09 move the logic from event handlers (I should separete my business and UI logic, no business logic in my control event handlers)
  * TODO: облачность ветер и осадки в виде иконок
  * TODO: день на графике с 1 числа, а не с 0
  * TODO: проставить TabIndex
@@ -55,7 +56,7 @@ namespace WetherDiary
             // Настраиваем програмно-созданный MSChart
             crtWeather.Name = "testChart";
             crtWeather.Location = new Point(15, 214);
-            crtWeather.Size = new System.Drawing.Size(576, 162);
+            crtWeather.Size = new System.Drawing.Size(576, 157);
             crtWeather.ChartAreas.Add(new System.Windows.Forms.DataVisualization.Charting.ChartArea("chrArea"));
             this.Controls.Add(crtWeather);
 
@@ -205,7 +206,14 @@ namespace WetherDiary
             dtpDate.ValueChanged += CurrentDateChanged;
             // Needed for stop throwing ValueChanged event while browsing DateTimePicker
             dtpDate.DropDown += (s, e) => { dtpDate.ValueChanged -= CurrentDateChanged; };
-            dtpDate.CloseUp += (s, e) => { dtpDate.ValueChanged += CurrentDateChanged; CurrentDateChanged(this, EventArgs.Empty); };
+            dtpDate.CloseUp += (s, e) => { dtpDate.ValueChanged += CurrentDateChanged; CurrentDateChanged(null, EventArgs.Empty); };
+            // Needed for stop throwing ValueChanged event while browsing DateTimePicker
+            dtpMesPeriodFrom.DropDown += (s, e) => { dtpMesPeriodFrom.ValueChanged -= dtpMesPeriod_ValueChanged; };
+            dtpMesPeriodTo.DropDown += (s, e) => { dtpMesPeriodTo.ValueChanged -= dtpMesPeriod_ValueChanged; };
+            dtpMesPeriodFrom.CloseUp += (s, e) => { dtpMesPeriodFrom.ValueChanged += dtpMesPeriod_ValueChanged; 
+                dtpMesPeriod_ValueChanged(null, EventArgs.Empty); };
+            dtpMesPeriodTo.CloseUp += (s, e) => { dtpMesPeriodTo.ValueChanged -= dtpMesPeriod_ValueChanged; 
+                dtpMesPeriod_ValueChanged(null, EventArgs.Empty); };
 
             cbChartPeriod.SelectedIndexChanged += cbChartPeriod_SelectedIndexChanged;
             cbMeasurePeriods.SelectedIndexChanged += cbMeasurePeriods_SelectedIndexChanged;
@@ -773,6 +781,11 @@ namespace WetherDiary
             // Added to this event because can't change Row.BackColor before the DataGridView will shown
             // because of this, rows don't mark just after start application 
             MarkMinAndMaxTemp();
+        }
+
+        private void dtpMesPeriod_ValueChanged(object sender, EventArgs e)
+        {
+            cbMeasurePeriods_SelectedIndexChanged(null, EventArgs.Empty);
         }
     }
 }
