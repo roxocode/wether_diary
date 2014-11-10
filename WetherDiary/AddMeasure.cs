@@ -55,8 +55,10 @@ namespace WetherDiary
             dgvFallouts.AllowUserToAddRows = false;
             dgvFallouts.CellBorderStyle = DataGridViewCellBorderStyle.None;
             dgvFallouts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvFallouts.RowTemplate.Height = 36;
             
             // Precipitation table
+            // TODO: Autosize columns width
             var flColumn = new DataGridViewTextBoxColumn();
             flColumn.DataPropertyName = "Name";
             flColumn.Name = "Name";
@@ -67,7 +69,7 @@ namespace WetherDiary
             flIconColumn.DataPropertyName = "FalloutIcon";
             flIconColumn.Name = "FalloutIcon";
             flIconColumn.HeaderText = "Иконка";
-            flIconColumn.Width = 20;
+            flIconColumn.Width = 36;
             dgvFallouts.Columns.Add(flIconColumn);
             
             errorProvider = new ErrorProvider();

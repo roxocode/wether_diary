@@ -183,13 +183,13 @@ namespace WetherDiary
             dgvMain.Columns.Add(falloutsImageColumn);
             // Убираем иконку (красный крестик) для ячейки без значения
             dgvMain.Columns["FalloutsImg"].DefaultCellStyle.NullValue = null;
-
+            /*
             var windColumnNew = new IconTextBox.IconTextColumn();
             windColumnNew.DataPropertyName = "Wind_Name";
             windColumnNew.Name = "Wind_Name";
             windColumnNew.HeaderText = "Ветер";
             dgvMain.Columns.Add(windColumnNew);
-
+            */
             // Columns color 
             // TODO: make setting by user
             dgvMain.Columns[0].DefaultCellStyle.BackColor = Color.Azure;
