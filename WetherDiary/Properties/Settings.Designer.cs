@@ -106,5 +106,17 @@ namespace WetherDiary.Properties {
                 this["GridColumns"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("32")]
+        public byte IconSize {
+            get {
+                return ((byte)(this["IconSize"]));
+            }
+            set {
+                this["IconSize"] = value;
+            }
+        }
     }
 }

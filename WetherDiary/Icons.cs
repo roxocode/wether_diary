@@ -12,12 +12,12 @@ namespace WetherDiary
         /// <summary>
         /// Width and height of icon - constant
         /// </summary>
-        static public readonly byte IconSize = 16;
+        static public readonly byte IconSize = Properties.Settings.Default.IconSize;
 
         /// <summary>
         /// Icon's directory
         /// </summary>
-        static public readonly string IconsDirectory = "icons";
+        static public readonly string IconsDirectory = Properties.Settings.Default.IconsDir;
 
         // Получаем иконку осадка
         static public Image GetIconImage(string iconPath)

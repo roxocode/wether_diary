@@ -9,9 +9,8 @@ namespace WetherDiary.IconTextBox
     /// </summary>
     public class IconTextCell : DataGridViewTextBoxCell
     {
-        // test for icon 16 x 16
-        private int iconLeftPad = 2;
-        private int iconTopPad = 2;
+        private readonly int iconLeftPad = 2;
+        private readonly int iconTopPad = 2;
         
         private Image iconValue;
         private Size iconSize;
@@ -67,7 +66,7 @@ namespace WetherDiary.IconTextBox
             {
                 System.Drawing.Drawing2D.GraphicsContainer container = graphics.BeginContainer();
                 graphics.SetClip(cellBounds);
-                // ?????? ??? ????????? ??????
+                // 
                 Point p = new Point();
                 p = cellBounds.Location;
                 p.Offset(iconLeftPad, iconTopPad);

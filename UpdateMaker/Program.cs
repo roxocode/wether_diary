@@ -54,5 +54,37 @@ namespace UpdateMaker
                 }
             }
         }
+
+        /*
+        // Input form (for new file name
+        private DialogResult GetWhatNew(ref string input)
+        {
+            Form inputForm = new Form();
+            inputForm.Text = "";
+            inputForm.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            inputForm.StartPosition = FormStartPosition.CenterParent;
+            inputForm.Height = 70;
+            inputForm.Width = 200;
+
+            TextBox tbNewFileName = new TextBox();
+            tbNewFileName.Height = 23;
+            tbNewFileName.Width = 130;
+            tbNewFileName.Location = new Point(5, 5);
+            inputForm.Controls.Add(tbNewFileName);
+
+            Button btnOK = new Button();
+            btnOK.Size = new Size(60, 30);
+            btnOK.Location = new Point(140, 5);
+            btnOK.Text = "OK";
+            btnOK.DialogResult = DialogResult.OK;
+            inputForm.Controls.Add(btnOK);
+
+            inputForm.AcceptButton = btnOK;
+
+            DialogResult result = inputForm.ShowDialog();
+            input = tbNewFileName.Text;
+            return result;
+        }
+        */
     }
 }

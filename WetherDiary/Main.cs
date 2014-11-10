@@ -78,6 +78,8 @@ namespace WetherDiary
             dgvMain.AllowUserToAddRows = false;
             this.tableName = "weather";
             this._engine = new SQLiteDBEngine(Properties.Settings.Default.DbName);
+            // test
+            dgvMain.RowTemplate.Height = 36;
 
             cbChartPeriod.DropDownStyle = ComboBoxStyle.DropDownList;
             cbChartPeriod.Items.AddRange(new object[] { "7 дней", "Месяц", "Задать вручную ..." });
@@ -149,6 +151,7 @@ namespace WetherDiary
             cloudColumn.ValueMember = "ID";
             cloudColumn.ValueType = typeof(string);
             cloudColumn.FlatStyle = FlatStyle.Flat;
+            cloudColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing;
             dgvMain.Columns.Add(cloudColumn);
 
             var windColumn = new DataGridViewComboBoxColumn();
@@ -159,6 +162,7 @@ namespace WetherDiary
             windColumn.DisplayMember = "Name";
             windColumn.ValueMember = "ID";
             windColumn.FlatStyle = FlatStyle.Flat;
+            windColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing;
             dgvMain.Columns.Add(windColumn);
 
             var windForceColumn = new DataGridViewComboBoxColumn();
@@ -169,6 +173,7 @@ namespace WetherDiary
             windForceColumn.DisplayMember = "Name";
             windForceColumn.ValueMember = "ID";
             windForceColumn.FlatStyle = FlatStyle.Flat;
+            windForceColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing;
             dgvMain.Columns.Add(windForceColumn);
 
             var falloutsImageColumn = new DataGridViewImageColumn();
@@ -178,7 +183,13 @@ namespace WetherDiary
             dgvMain.Columns.Add(falloutsImageColumn);
             // Убираем иконку (красный крестик) для ячейки без значения
             dgvMain.Columns["FalloutsImg"].DefaultCellStyle.NullValue = null;
-            
+
+            var windColumnNew = new IconTextBox.IconTextColumn();
+            windColumnNew.DataPropertyName = "Wind_Name";
+            windColumnNew.Name = "Wind_Name";
+            windColumnNew.HeaderText = "Ветер";
+            dgvMain.Columns.Add(windColumnNew);
+
             // Columns color 
             // TODO: make setting by user
             dgvMain.Columns[0].DefaultCellStyle.BackColor = Color.Azure;
@@ -289,7 +300,9 @@ namespace WetherDiary
                 case 0:
                     // 7 days
                     ToggleVisiblePeriods(false);
-                    sqlMeasures = string.Format("SELECT * FROM weather WHERE date(Measure_Date) <= date('{0}') ORDER BY Measure_Date DESC LIMIT {1}",
+                    dtpDate.Value.AddDays(-7);
+                    //dgvMain.DataSource = GetMeasures(DateTime from, DateTime to);
+                    sqlMeasures = string.Format("SELECT wth.*, w.Name AS Wind_Name FROM weather wth LEFT JOIN wind w ON wth.Wind_ID = w.ID WHERE date(Measure_Date) <= date('{0}') ORDER BY Measure_Date DESC LIMIT {1}",
                         dtpDate.Value.ToString("yyyy-MM-dd"),
                         7);
                     bs.DataSource = _engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlMeasures));
@@ -752,8 +765,8 @@ namespace WetherDiary
                 if (dtIconPaths.Rows.Count > 1)
                 {
                     // TODO: 2014-04-22 Проверки на существование файла и на подходящий размер
-                    // Предполагаем что для каждой записи с непустым IconPath есть валидная иконка и ее размер 16х16 px
-                    // Длину считаем как кол-во иконок * их длину (16 px) + расстояние между ними (4 px)
+                    // Предполагаем что для каждой записи с непустым IconPath есть валидная иконка и ее размер 
+                    // Длину считаем как кол-во иконок * их длину + расстояние между ними (4 px)
                     int spaceBtwIcons = 4;
 
                     int outputImgWidth = dtIconPaths.Rows.Count * Icons.IconSize + (dtIconPaths.Rows.Count - 1) * spaceBtwIcons;
