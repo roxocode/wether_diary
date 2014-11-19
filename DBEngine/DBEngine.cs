@@ -122,7 +122,7 @@ namespace DBEngine
                 {
                     adapter.Update(table);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw;
                 }

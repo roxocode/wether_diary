@@ -5,7 +5,7 @@ using System.Windows.Forms;
 namespace WetherDiary.IconTextBox
 {
     /// <summary>
-    /// Description of IconTextCell.
+    /// Description of IconTextCell
     /// </summary>
     public class IconTextCell : DataGridViewTextBoxCell
     {

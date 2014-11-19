@@ -49,8 +49,6 @@ namespace WetherDiary
                 dgvBook.Columns.Add(buttonColumn);
             }
             dgvBook.CellContentClick += dgvBook_CellContentClick;
-
-            dgvBook.Rows[0].Cells["SelectIconBtn"].ToolTipText = string.Empty;
         }
 
         /// <summary>
@@ -72,7 +70,7 @@ namespace WetherDiary
                     {
                         icon = Image.FromFile(ofd.FileName);
                     }
-                    catch (OutOfMemoryException ex)
+                    catch (OutOfMemoryException)
                     {
                         MessageBox.Show("This is not an image!");
                         return;

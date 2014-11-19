@@ -32,7 +32,7 @@ namespace WetherDiary
                 else
                     res = Image.FromFile(iconPath);
             }
-            catch (System.IO.FileNotFoundException e)
+            catch (System.IO.FileNotFoundException)
             {
                 res = Image.FromFile("icons\\default.png");
             }

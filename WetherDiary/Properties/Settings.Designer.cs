@@ -118,5 +118,17 @@ namespace WetherDiary.Properties {
                 this["IconSize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("36")]
+        public byte RowHeight {
+            get {
+                return ((byte)(this["RowHeight"]));
+            }
+            set {
+                this["RowHeight"] = value;
+            }
+        }
     }
 }

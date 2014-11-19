@@ -58,11 +58,11 @@ namespace WetherDiary
             dgvFallouts.RowTemplate.Height = 36;
             
             // Precipitation table
-            // TODO: Autosize columns width
             var flColumn = new DataGridViewTextBoxColumn();
             flColumn.DataPropertyName = "Name";
             flColumn.Name = "Name";
             flColumn.HeaderText = "Имя";
+            flColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvFallouts.Columns.Add(flColumn);
 
             var flIconColumn = new DataGridViewImageColumn();
