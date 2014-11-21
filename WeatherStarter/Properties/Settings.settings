@@ -11,8 +11,8 @@
     <Setting Name="PasswordFTP" Type="System.String" Scope="User">
       <Value Profile="(Default)">alex7rox</Value>
     </Setting>
-    <Setting Name="VersionXmlPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">backup\version.xml</Value>
+    <Setting Name="VersionXmlFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">version.xml</Value>
     </Setting>
     <Setting Name="BackupDir" Type="System.String" Scope="User">
       <Value Profile="(Default)">backup</Value>

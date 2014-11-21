@@ -61,13 +61,13 @@ namespace WeatherStarter.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("backup\\version.xml")]
-        public string VersionXmlPath {
+        [global::System.Configuration.DefaultSettingValueAttribute("version.xml")]
+        public string VersionXmlFile {
             get {
-                return ((string)(this["VersionXmlPath"]));
+                return ((string)(this["VersionXmlFile"]));
             }
             set {
-                this["VersionXmlPath"] = value;
+                this["VersionXmlFile"] = value;
             }
         }
         

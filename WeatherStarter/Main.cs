@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
 using WeatherStarter.Properties;
+using System.ComponentModel;
 
 /*
  * WeatherStarter used to checking for updates, updating and starting main application
@@ -22,22 +23,114 @@ namespace WeatherStarter
             public Version ver;
             public string crc;
         }
-        List<UpdateFile> updateVersions;
         string updateDescr = string.Empty;
-        
+        BackgroundWorker bWorker = new BackgroundWorker();
+
         public Main()
         {
             InitializeComponent();
             this.Icon = WeatherStarter.Properties.Resources.WeatherDiary;
+
+            bWorker.WorkerReportsProgress = true;
+            bWorker.DoWork += bWorker_DoWork;
+            bWorker.ProgressChanged += (s, e) => { tbLog.AppendLine(e.UserState.ToString()); };
+
+            bWorker.RunWorkerAsync();
         }
 
-        private string GetUpdateTextVersions()
+        private void bWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (updateVersions == null)
-                updateVersions = GetUpdateVersions();
+            try
+            {
+                Directory.CreateDirectory(Settings.Default.BackupDir);
+                using (WebClient wc = new WebClient())
+                {
+                    wc.Credentials = new NetworkCredential(Settings.Default.UserFTP, Settings.Default.PasswordFTP);
+                    bWorker.ReportProgress(0, string.Format("Downloading file '{0}'...", Settings.Default.VersionXmlFile));
+                    wc.DownloadFile(
+                        string.Concat(Settings.Default.UpdateURI, Settings.Default.VersionXmlFile),
+                        Path.Combine(Settings.Default.BackupDir, Settings.Default.VersionXmlFile));
+                }
+            }
+            catch (WebException)
+            {
+                // TODO: save log to file 'start.log'
+                bWorker.ReportProgress(0, string.Format("Can't download file '{0}'", Settings.Default.VersionXmlFile));
+                RunWeatherDiaryAndExit();
+                return;
+            }
 
+            bWorker.ReportProgress(0, string.Format("File '{0}' was downloaded", Settings.Default.VersionXmlFile));
+            // TODO: disable selection on tbVersions
+            tbCurrentVersions.Invoke((MethodInvoker)(() => tbCurrentVersions.Text = GetCurrentTextVersions()));
+            List<UpdateFile> updateFileList = GetUpdateVersions();
+            tbUpdateVersions.Invoke((MethodInvoker)(() => tbUpdateVersions.Text = GetUpdateTextVersions(updateFileList)));
+
+            // Structure of update packege:
+            // version.xml (XML file with versions data, crc sums)
+            // WeatherDiary.exe or/and DBEngine.dll
+            foreach (UpdateFile uf in updateFileList)
+            {
+                // Compare assembly versions
+                System.Version curFile = System.Reflection.AssemblyName.GetAssemblyName(uf.name).Version;
+                if (uf.ver > curFile)
+                {
+                    try
+                    {
+                        using (WebClient wc = new WebClient())
+                        {
+                            wc.Credentials = new NetworkCredential(Settings.Default.UserFTP, Settings.Default.PasswordFTP);
+                            bWorker.ReportProgress(0, string.Format("Downloading file '{0}' (version: {1})...", uf.name, uf.ver));
+                            wc.DownloadFile(
+                                string.Concat(Settings.Default.UpdateURI, uf.name),
+                                Path.Combine(Settings.Default.BackupDir, uf.name));
+                        }
+                    }
+                    catch (WebException)
+                    {
+                        bWorker.ReportProgress(0, string.Format("Can't download file '{0}'", uf.name));
+                        continue;
+                    }
+
+                    bWorker.ReportProgress(0, string.Format("File '{0}' was downloaded", uf.name));
+                    // check verison one more time
+                    Version downloadedVer = AssemblyName.GetAssemblyName(string.Format("{0}\\{1}", Settings.Default.BackupDir, uf.name)).Version;
+                    if (!uf.ver.Equals(downloadedVer))
+                    {
+                        // TODO: write down to log file or/and send by e-mail
+                        bWorker.ReportProgress(0, string.Format("Version of '{0}' in {1} and downloaded file is not appropriates", uf.name, Settings.Default.VersionXmlFile));
+                        break;
+                    }
+                    else
+                        bWorker.ReportProgress(0, string.Format("Checking for file '{0}' versions appropriates was completed", uf.name));
+
+                    // Make backup (copy file to backup directory with .bak extension)
+                    System.IO.File.Copy(uf.name, string.Format("{0}\\{1}.bak", Settings.Default.BackupDir, uf.name), true);
+                    // copy updated file
+                    System.IO.File.Copy(string.Concat(Settings.Default.BackupDir, uf.name), uf.name, true);
+                    // delete update file
+                    System.IO.File.Delete(string.Concat(Settings.Default.BackupDir, uf.name));
+                    bWorker.ReportProgress(0, string.Format("File '{0}' was updated", uf.name));
+                    if (this.updateDescr == string.Empty)
+                        MessageBox.Show("This application was updated.");
+                    else
+                        MessageBox.Show(string.Format("This application was updated.{0}What's new:{0}{1}", Environment.NewLine, this.updateDescr));
+                }
+                else
+                    bWorker.ReportProgress(0, string.Format("File '{0}' is already updated", uf.name));
+            }
+
+            #if DEBUG
+                MessageBox.Show("This application was updated");
+            #endif
+
+            RunWeatherDiaryAndExit();
+        }
+
+        private string GetUpdateTextVersions(List<UpdateFile> updates)
+        {
             string res = string.Empty;
-            foreach (UpdateFile file in updateVersions)
+            foreach (UpdateFile file in updates)
             {
                 res += string.Format("{0}\t{1}{2}", file.name, file.ver.ToString(), Environment.NewLine);
             }
@@ -49,7 +142,7 @@ namespace WeatherStarter
             List<UpdateFile> res = new List<UpdateFile>();
             // Parse XML file (using XPath)
             XmlDocument versionDoc = new XmlDocument();
-            versionDoc.Load(Settings.Default.VersionXmlPath);
+            versionDoc.Load(Path.Combine(Settings.Default.BackupDir, Settings.Default.VersionXmlFile));
             // TODO: Show what's new section on the form
             this.updateDescr = versionDoc.SelectSingleNode("/update/description").InnerText;
             // Get files section
@@ -80,7 +173,7 @@ namespace WeatherStarter
 
         private void RunWeatherDiaryAndExit()
         {
-            this.Hide();
+            this.Invoke((MethodInvoker)(() => this.Hide()));
             System.Diagnostics.ProcessStartInfo mainApp = new System.Diagnostics.ProcessStartInfo("WetherDiary.exe");
             System.Diagnostics.Process.Start(mainApp);
             Application.Exit();
@@ -88,90 +181,7 @@ namespace WeatherStarter
 
         private void Main_Shown(object sender, EventArgs e)
         {
-            try
-            {
-                Directory.CreateDirectory(Settings.Default.BackupDir);
-                using (WebClient wc = new WebClient())
-                {
-                    wc.Credentials = new NetworkCredential(Settings.Default.UserFTP, Settings.Default.PasswordFTP);
-                    tbLog.AppendLine("Downloading file 'version.xml'...");
-                    wc.DownloadFile(String.Format("{0}version.xml", Settings.Default.UpdateURI), Settings.Default.VersionXmlPath);
-                }
-            }
-            catch (WebException ex)
-            {
-                // TODO: save log to file 'start.log'
-                tbLog.AppendLine("Can't download file 'version.xml'");
-                RunWeatherDiaryAndExit();
-                return;
-            }
 
-            tbLog.AppendLine("File 'version.xml' was downloaded");
-            // TODO: disable selection on tbVersions
-            tbCurrentVersions.Text = GetCurrentTextVersions();
-            tbUpdateVersions.Text = GetUpdateTextVersions();
-
-            // Structure of update packege:
-            // version.xml (XML file with versions data, crc sums)
-            // WeatherDiary.exe or/and DBEngine.dll
-
-            List<UpdateFile> updateFileList = GetUpdateVersions();
-            foreach (UpdateFile uf in updateFileList)
-            {
-                // Compare assembly versions
-                System.Version curFile = System.Reflection.AssemblyName.GetAssemblyName(uf.name).Version;
-                if (uf.ver > curFile)
-                {
-                    try
-                    {
-                        using (WebClient wc = new WebClient())
-                        {
-                            wc.Credentials = new NetworkCredential(Settings.Default.UserFTP, Settings.Default.PasswordFTP);
-                            tbLog.AppendLine(string.Format("Downloading file '{0}' (version: {1})...", uf.name, uf.ver));
-                            wc.DownloadFile(
-                                string.Format("{0}{1}", Settings.Default.UpdateURI, uf.name),
-                                string.Format("{0}\\{1}", Settings.Default.BackupDir, uf.name));
-                        }
-                    }
-                    catch (WebException ex)
-                    {
-                        tbLog.AppendLine(string.Format("Can't download file '{0}'", uf.name));
-                        continue;
-                    }
-
-                    tbLog.AppendLine(string.Format("File '{0}' was downloaded", uf.name));
-                    // check verison one more time
-                    Version downloadedVer = AssemblyName.GetAssemblyName(string.Format("{0}\\{1}", Settings.Default.BackupDir, uf.name)).Version;
-                    if (!uf.ver.Equals(downloadedVer))
-                    {
-                        // TODO: write down to log file or/and send by e-mail
-                        tbLog.AppendLine(string.Format("Version of '{0}' in version.xml and downloaded file is not appropriates", uf.name));
-                        break;
-                    }
-                    else
-                        tbLog.AppendLine(string.Format("Checking for file '{0}' versions appropriates was completed", uf.name));
-
-                    // Make backup (copy file to backup directory with .bak extension)
-                    System.IO.File.Copy(uf.name, string.Format("{0}\\{1}.bak", Settings.Default.BackupDir, uf.name), true);
-                    // copy updated file
-                    System.IO.File.Copy(string.Format("{0}\\{1}", Settings.Default.BackupDir, uf.name), uf.name, true);
-                    // delete update file
-                    System.IO.File.Delete(string.Format("{0}\\{1}", Settings.Default.BackupDir, uf.name));
-                    tbLog.AppendLine(string.Format("File '{0}' was updated", uf.name));
-                    if (this.updateDescr == string.Empty)
-                        MessageBox.Show("This application was updated.");
-                    else
-                        MessageBox.Show(string.Format("This application was updated.{0}What's new:{0}{1}", Environment.NewLine, this.updateDescr));
-                }
-                else
-                    tbLog.AppendLine(string.Format("File '{0}' is already updated", uf.name));
-            }
-
-            #if DEBUG
-            MessageBox.Show("This application was updated");
-            #endif
-            
-            RunWeatherDiaryAndExit();
         }
     }
 }
