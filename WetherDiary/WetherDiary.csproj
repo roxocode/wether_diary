@@ -88,7 +88,6 @@
     <Compile Include="Book.Designer.cs">
       <DependentUpon>Book.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controller.cs" />
     <Compile Include="UserSettings\ColumnInfo.cs" />
     <Compile Include="Icons.cs" />
     <Compile Include="IconTextBox\IconTextBoxCell.cs" />

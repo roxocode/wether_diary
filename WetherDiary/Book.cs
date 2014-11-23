@@ -8,18 +8,21 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using DBEngine;
+using System.Reflection;
 
 namespace WetherDiary
 {
     public partial class Book : Form
     {
         SQLiteDBEngine engine;
-        string tableName;
 
         public Book()
         {
             InitializeComponent();
-            this.engine = new DBEngine.SQLiteDBEngine(Properties.Settings.Default.DbName);
+            string dbPath = Path.Combine(
+                Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
+                Properties.Settings.Default.DbName);
+            this.engine = new DBEngine.SQLiteDBEngine(dbPath);
 
             dgvBook.RowHeadersVisible = false;
             dgvBook.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
