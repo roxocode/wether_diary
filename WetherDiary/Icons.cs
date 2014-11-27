@@ -19,22 +19,30 @@ namespace WetherDiary
         /// </summary>
         static public readonly string IconsDirectory = Properties.Settings.Default.IconsDir;
 
+        /// <summary>
+        /// Absolute default icon path
+        /// </summary>
+        static public readonly string DefaultIconPath = Path.Combine(
+            Path.Combine(
+                Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location),
+                Properties.Settings.Default.IconsDir),
+            Properties.Settings.Default.DefaultIconName);
+
         // Получаем иконку осадка
         static public Image GetIconImage(string iconPath)
         {
-            // TODO: Путь к иконке по умолнчанию в константу или в настройки
             Image res = null;
             try
             {
                 // без этого выдает ошибку ArgumentException: The path is not of a legal form.
                 if (iconPath == string.Empty)
-                    res = Image.FromFile("icons\\default.png");
+                    res = Image.FromFile(DefaultIconPath);
                 else
                     res = Image.FromFile(iconPath);
             }
             catch (System.IO.FileNotFoundException)
             {
-                res = Image.FromFile("icons\\default.png");
+                res = Image.FromFile(DefaultIconPath);
             }
             return res;
         }

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.OleDb;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using DBEngine;
@@ -19,6 +15,10 @@ namespace WetherDiary
         public Book()
         {
             InitializeComponent();
+            this.CancelButton = btnCancel;
+            btnSave.DialogResult = DialogResult.OK;
+            btnCancel.DialogResult = DialogResult.Cancel;
+            
             string dbPath = Path.Combine(
                 Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
                 Properties.Settings.Default.DbName);
@@ -38,6 +38,8 @@ namespace WetherDiary
             dgvBook.Columns["Name"].HeaderText = "Наименование";
             // Автозаполнение только для одной колонки, в будущем возможно потребуется сделать для всех (в цикле)
             dgvBook.Columns["Name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            if (dgvBook.Columns.Contains("IconPath"))
+                dgvBook.Columns["IconPath"].HeaderText = "Иконка";
 
             // Только для справочника Осадки, добавление колонки с кнопкой
             // TODO: 2014-08-30 Disable ToolTip for buttons
@@ -85,7 +87,6 @@ namespace WetherDiary
                         return;
                     }
 
-                    MessageBox.Show(string.Format("It's image {0} x {0} px", Icons.IconSize));
                     // Сравнение путей
                     if (Directory.GetParent(ofd.FileName).ToString() != iconsPath)
                     {

@@ -647,7 +647,11 @@ namespace WetherDiary
             dt.TableName = "cloud";
             Book cloud = new Book(dt);
             cloud.Text = "Облачность";
-            cloud.ShowDialog();
+            if (cloud.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                // TODO: Change this call to function rather than event handler
+                CurrentDateChanged(null, EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -659,7 +663,11 @@ namespace WetherDiary
             dt.TableName = "fallout";
             Book precipitation = new Book(dt);
             precipitation.Text = "Осадки";
-            precipitation.ShowDialog();
+            if (precipitation.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                // TODO: Change this call to function rather than event handler
+                CurrentDateChanged(null, EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -669,9 +677,13 @@ namespace WetherDiary
         {
             DataTable dt = engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT * FROM wind"));
             dt.TableName = "wind";
-            Book precipitation = new Book(dt);
-            precipitation.Text = "Ветер";
-            precipitation.ShowDialog();
+            Book wind = new Book(dt);
+            wind.Text = "Ветер";
+            if (wind.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                // TODO: Change this call to function rather than event handler
+                CurrentDateChanged(null, EventArgs.Empty);
+            }
         }
 
         /// <summary>
@@ -683,7 +695,11 @@ namespace WetherDiary
             dt.TableName = "windForce";
             Book windForce = new Book(dt);
             windForce.Text = "Сила ветра";
-            windForce.ShowDialog();
+            if (windForce.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                // TODO: Change this call to function rather than event handler
+                CurrentDateChanged(null, EventArgs.Empty);
+            }
         }
 
         /// <summary>

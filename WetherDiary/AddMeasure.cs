@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using DBEngine;
 using DBEngine.Access;
+using System.IO;
 
 
 namespace WetherDiary
@@ -25,7 +26,10 @@ namespace WetherDiary
         {
             InitializeComponent();
 
-            this.engine = new SQLiteDBEngine(Properties.Settings.Default.DbName);
+            string dbPath = Path.Combine(
+                Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location),
+                Properties.Settings.Default.DbName);
+            this.engine = new SQLiteDBEngine(dbPath);
             // Облачность
             cbCloud.DataSource = engine.AddBlankRow(engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT ID, Name FROM cloud")));
             cbCloud.DisplayMember = "Name";
