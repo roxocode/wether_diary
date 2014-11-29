@@ -28,17 +28,24 @@ namespace WetherDiary
                 Properties.Settings.Default.IconsDir),
             Properties.Settings.Default.DefaultIconName);
 
-        // Получаем иконку осадка
-        static public Image GetIconImage(string iconPath)
+        /// <summary>
+        /// Get icon image from relative path (relative path convert to absolute)
+        /// </summary>
+        /// <param name="relativeIconPath">relative icon path</param>
+        /// <returns></returns>
+        static public Image GetIconImage(string relativeIconPath)
         {
             Image res = null;
+            string absoluteIconPath = Path.Combine(
+                Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location),
+                relativeIconPath);
             try
             {
                 // без этого выдает ошибку ArgumentException: The path is not of a legal form.
-                if (iconPath == string.Empty)
+                if (absoluteIconPath == string.Empty)
                     res = Image.FromFile(DefaultIconPath);
                 else
-                    res = Image.FromFile(iconPath);
+                    res = Image.FromFile(absoluteIconPath);
             }
             catch (System.IO.FileNotFoundException)
             {
