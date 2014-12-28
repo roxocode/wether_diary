@@ -70,7 +70,8 @@ namespace WetherImporter
                 string sql = string.Format("INSERT INTO weather (Measure_Date, Temperature, Pressure, Cloud_ID, Wind_ID) VALUES ({0}, {1}, {2}, {3}, {4})",
                     new object[] {
                             // TODO: 2013-11-08 how to save datetime to database
-                            string.Format("'{0}'", fullDateTime.ToString("yyyy-MM-dd HH:mm")),
+                            // 2014-12-28: Add seconds ('ss') to datetime value for correct update in WeatherDiary
+                            string.Format("'{0}'", fullDateTime.ToString("yyyy-MM-dd HH:mm:ss")),
                             tempMes,
                             pressureMes,
                             "NULL",
