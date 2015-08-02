@@ -33,7 +33,7 @@ namespace DBEngine
 
         private string GetConnectionString()
         {
-             SQLiteConnectionStringBuilder stringBuilder = new SQLiteConnectionStringBuilder();
+            SQLiteConnectionStringBuilder stringBuilder = new SQLiteConnectionStringBuilder();
             stringBuilder.DataSource = this.DbPath;
             stringBuilder.Version = this.DbVersion;
 
@@ -113,6 +113,7 @@ namespace DBEngine
             using (SQLiteConnection connection = new SQLiteConnection(this.GetConnectionString()))
             {
                 this._connection = connection;
+                
                 SQLiteDataAdapter adapter = new SQLiteDataAdapter(
                     string.Format("SELECT * FROM {0}", table.TableName),
                     connection);
@@ -122,7 +123,7 @@ namespace DBEngine
                 {
                     adapter.Update(table);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw;
                 }

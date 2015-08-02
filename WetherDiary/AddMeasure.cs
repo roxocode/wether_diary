@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using DBEngine;
 using DBEngine.Access;
+using System.IO;
 
 
 namespace WetherDiary
@@ -25,7 +23,10 @@ namespace WetherDiary
         {
             InitializeComponent();
 
-            this.engine = new SQLiteDBEngine(Properties.Settings.Default.DbName);
+            string dbPath = Path.Combine(
+                Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location),
+                Properties.Settings.Default.DbName);
+            this.engine = new SQLiteDBEngine(dbPath);
             // Облачность
             cbCloud.DataSource = engine.AddBlankRow(engine.ExecuteQueryReturnDataTable(new SQLiteCommand("SELECT ID, Name FROM cloud")));
             cbCloud.DisplayMember = "Name";
@@ -55,19 +56,21 @@ namespace WetherDiary
             dgvFallouts.AllowUserToAddRows = false;
             dgvFallouts.CellBorderStyle = DataGridViewCellBorderStyle.None;
             dgvFallouts.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvFallouts.RowTemplate.Height = 36;
             
             // Precipitation table
             var flColumn = new DataGridViewTextBoxColumn();
             flColumn.DataPropertyName = "Name";
             flColumn.Name = "Name";
             flColumn.HeaderText = "Имя";
+            flColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvFallouts.Columns.Add(flColumn);
 
             var flIconColumn = new DataGridViewImageColumn();
             flIconColumn.DataPropertyName = "FalloutIcon";
             flIconColumn.Name = "FalloutIcon";
             flIconColumn.HeaderText = "Иконка";
-            flIconColumn.Width = 20;
+            flIconColumn.Width = 36;
             dgvFallouts.Columns.Add(flIconColumn);
             
             errorProvider = new ErrorProvider();

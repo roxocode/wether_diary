@@ -106,5 +106,29 @@ namespace WetherDiary.Properties {
                 this["GridColumns"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("32")]
+        public byte IconSize {
+            get {
+                return ((byte)(this["IconSize"]));
+            }
+            set {
+                this["IconSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("36")]
+        public byte RowHeight {
+            get {
+                return ((byte)(this["RowHeight"]));
+            }
+            set {
+                this["RowHeight"] = value;
+            }
+        }
     }
 }

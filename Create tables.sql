@@ -1,3 +1,12 @@
+-- Get information about table (columns name, type etc.)
+PRAGMA table_info(cloud)
+
+-- Add specified column to specified table
+ALTER TABLE cloud ADD COLUMN IconPath TEXT
+ALTER TABLE wind ADD COLUMN IconPath TEXT
+ALTER TABLE windForce ADD COLUMN IconPath TEXT
+
+
 CREATE TABLE wether
 (
 	ID,

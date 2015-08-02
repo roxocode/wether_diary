@@ -23,5 +23,11 @@
     <Setting Name="GridColumns" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="IconSize" Type="System.Byte" Scope="User">
+      <Value Profile="(Default)">32</Value>
+    </Setting>
+    <Setting Name="RowHeight" Type="System.Byte" Scope="User">
+      <Value Profile="(Default)">36</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
