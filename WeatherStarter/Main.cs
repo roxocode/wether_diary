@@ -15,6 +15,7 @@ namespace WeatherStarter
 {
     public partial class Main : Form
     {
+        // TODO: Exclude to resource file
         readonly string[] assemblies = new string[] { "WetherDiary.exe", "DBEngine.dll" };
         struct UpdateFile
         {
