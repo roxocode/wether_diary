@@ -57,11 +57,12 @@ namespace WetherDiary
 
             // Настраиваем програмно-созданный MSChart
             crtWeather.Name = "WeatherChart";
-            crtWeather.Location = new Point(15, 214);
-            crtWeather.Size = new System.Drawing.Size(576, 157);
+            crtWeather.Location = new Point(0, 29);
+            crtWeather.Size = new System.Drawing.Size(scChartData.Panel1.ClientSize.Width - clbCharts.Width, scChartData.Panel1.ClientSize.Height - 22);
+            crtWeather.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Right;
             crtWeather.ChartAreas.Add(new System.Windows.Forms.DataVisualization.Charting.ChartArea("MainArea"));
-            this.Controls.Add(crtWeather);
-
+            this.scChartData.Panel1.Controls.Add(this.crtWeather);
+            
             // chart control customization
             crtWeather.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.DarkGray;
             crtWeather.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.DarkGray;
@@ -215,10 +216,12 @@ namespace WetherDiary
                 this.WindowState = Properties.Settings.Default.WindowState;
                 this.Location = Properties.Settings.Default.WindowLocation;
                 this.Size = Properties.Settings.Default.WindowSize;
+                scChartData.SplitterDistance = Properties.Settings.Default.SplitterDistance;
 
                 // columns
                 string columnsCode = Properties.Settings.Default.GridColumns;
-                Serializer.SetDeserializeColSetting(dgvMain, columnsCode);
+                if (columnsCode != string.Empty)
+                    Serializer.SetDeserializeColSetting(dgvMain, columnsCode);
             };
             this.FormClosing += (s, e) => 
             {
@@ -241,7 +244,7 @@ namespace WetherDiary
                     Properties.Settings.Default.WindowLocation = this.Location;
                     Properties.Settings.Default.WindowSize = this.Size;
                 }
-                
+                Properties.Settings.Default.SplitterDistance = scChartData.SplitterDistance;
                 // Save DataGridView columns setting
                 Properties.Settings.Default.GridColumns = Serializer.GetSerializeColSetting(dgvMain);
                 Properties.Settings.Default.Save();
@@ -278,7 +281,6 @@ namespace WetherDiary
                 case 0:
                     // 7 days
                     ToggleVisiblePeriods(false);
-                    dtpDate.Value.AddDays(-7);
                     //TODO: 2014-11-14 dgvMain.DataSource = GetMeasures(DateTime from, DateTime to);
                     sqlMeasures = string.Format(@"
                         SELECT 
@@ -299,9 +301,20 @@ namespace WetherDiary
                     dgvMain.DataSource = bs;
                     break;
                 case 1:
-                    // 1 month
+                    // 1 month (30 days)
                     ToggleVisiblePeriods(false);
-                    sqlMeasures = string.Format("SELECT * FROM weather WHERE date(Measure_Date) <= date('{0}') ORDER BY Measure_Date DESC LIMIT {1}",
+                    sqlMeasures = string.Format(@"
+                        SELECT 
+                            wth.*, 
+                            w.Name AS Wind_Name,
+                            c.Name AS Cloud_Name,
+                            wf.Name AS WindForce_Name
+                        FROM weather wth 
+                            LEFT JOIN wind w ON wth.Wind_ID = w.ID 
+                            LEFT JOIN cloud c ON wth.Cloud_ID = c.ID
+                            LEFT JOIN windForce wf ON wth.WindForce_ID = wf.ID
+                        WHERE date(Measure_Date) <= date('{0}') 
+                        ORDER BY Measure_Date DESC LIMIT {1}",
                         dtpDate.Value.ToString("yyyy-MM-dd"),
                         30);
                     bs.DataSource = engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlMeasures));
@@ -311,7 +324,18 @@ namespace WetherDiary
                 case 2:
                     // Custom period
                     ToggleVisiblePeriods(true);
-                    sqlMeasures = string.Format("SELECT * FROM weather WHERE date(Measure_Date) BETWEEN date('{0}') AND date('{1}') ORDER BY Measure_Date DESC",
+                    sqlMeasures = string.Format(@"
+                        SELECT 
+                            wth.*, 
+                            w.Name AS Wind_Name,
+                            c.Name AS Cloud_Name,
+                            wf.Name AS WindForce_Name
+                        FROM weather wth 
+                            LEFT JOIN wind w ON wth.Wind_ID = w.ID 
+                            LEFT JOIN cloud c ON wth.Cloud_ID = c.ID
+                            LEFT JOIN windForce wf ON wth.WindForce_ID = wf.ID
+                        WHERE date(Measure_Date) BETWEEN date('{0}') AND date('{1}')
+                        ORDER BY Measure_Date DESC",
                         dtpMesPeriodFrom.Value.ToString("yyyy-MM-dd"),
                         dtpMesPeriodTo.Value.ToString("yyyy-MM-dd"));
                     bs.DataSource = engine.ExecuteQueryReturnDataTable(new SQLiteCommand(sqlMeasures));
@@ -319,6 +343,7 @@ namespace WetherDiary
                     dgvMain.DataSource = bs;
                     break;
             }
+            lblRowsCount.Text = (bs.DataSource as DataTable).Rows.Count.ToString();
         }
 
         /// <summary>

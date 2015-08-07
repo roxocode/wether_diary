@@ -66,12 +66,18 @@
             this.cbMeasurePeriods = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.lblRainyDays = new System.Windows.Forms.Label();
+            this.scChartData = new System.Windows.Forms.SplitContainer();
+            this.lblTotalCount = new System.Windows.Forms.Label();
+            this.lblRowsCount = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
             this.rowMenu.SuspendLayout();
             this.gbLastMonthTemperature.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvYearsDays)).BeginInit();
+            this.scChartData.Panel1.SuspendLayout();
+            this.scChartData.Panel2.SuspendLayout();
+            this.scChartData.SuspendLayout();
             this.SuspendLayout();
             // 
             // dtpDate
@@ -92,10 +98,13 @@
             // 
             // dgvMain
             // 
+            this.dgvMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvMain.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvMain.Location = new System.Drawing.Point(15, 402);
+            this.dgvMain.Location = new System.Drawing.Point(1, 29);
             this.dgvMain.Name = "dgvMain";
-            this.dgvMain.Size = new System.Drawing.Size(729, 169);
+            this.dgvMain.Size = new System.Drawing.Size(754, 168);
             this.dgvMain.TabIndex = 2;
             // 
             // rowMenu
@@ -270,7 +279,7 @@
             // cbChartPeriod
             // 
             this.cbChartPeriod.FormattingEnabled = true;
-            this.cbChartPeriod.Location = new System.Drawing.Point(113, 187);
+            this.cbChartPeriod.Location = new System.Drawing.Point(64, 3);
             this.cbChartPeriod.Name = "cbChartPeriod";
             this.cbChartPeriod.Size = new System.Drawing.Size(121, 21);
             this.cbChartPeriod.TabIndex = 11;
@@ -278,7 +287,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(59, 194);
+            this.label2.Location = new System.Drawing.Point(10, 6);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(48, 13);
             this.label2.TabIndex = 12;
@@ -286,22 +295,25 @@
             // 
             // dtpChrPeriodFrom
             // 
-            this.dtpChrPeriodFrom.Location = new System.Drawing.Point(356, 188);
+            this.dtpChrPeriodFrom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.dtpChrPeriodFrom.Location = new System.Drawing.Point(389, 3);
             this.dtpChrPeriodFrom.Name = "dtpChrPeriodFrom";
-            this.dtpChrPeriodFrom.Size = new System.Drawing.Size(102, 20);
+            this.dtpChrPeriodFrom.Size = new System.Drawing.Size(111, 20);
             this.dtpChrPeriodFrom.TabIndex = 13;
             // 
             // dtpChrPeriodTo
             // 
-            this.dtpChrPeriodTo.Location = new System.Drawing.Point(489, 188);
+            this.dtpChrPeriodTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.dtpChrPeriodTo.Location = new System.Drawing.Point(531, 3);
             this.dtpChrPeriodTo.Name = "dtpChrPeriodTo";
-            this.dtpChrPeriodTo.Size = new System.Drawing.Size(102, 20);
+            this.dtpChrPeriodTo.Size = new System.Drawing.Size(111, 20);
             this.dtpChrPeriodTo.TabIndex = 13;
             // 
             // lblChrPeriodFrom
             // 
+            this.lblChrPeriodFrom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblChrPeriodFrom.AutoSize = true;
-            this.lblChrPeriodFrom.Location = new System.Drawing.Point(337, 194);
+            this.lblChrPeriodFrom.Location = new System.Drawing.Point(370, 6);
             this.lblChrPeriodFrom.Name = "lblChrPeriodFrom";
             this.lblChrPeriodFrom.Size = new System.Drawing.Size(13, 13);
             this.lblChrPeriodFrom.TabIndex = 14;
@@ -309,8 +321,9 @@
             // 
             // lblChrPeriodTo
             // 
+            this.lblChrPeriodTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblChrPeriodTo.AutoSize = true;
-            this.lblChrPeriodTo.Location = new System.Drawing.Point(464, 194);
+            this.lblChrPeriodTo.Location = new System.Drawing.Point(506, 6);
             this.lblChrPeriodTo.Name = "lblChrPeriodTo";
             this.lblChrPeriodTo.Size = new System.Drawing.Size(19, 13);
             this.lblChrPeriodTo.TabIndex = 14;
@@ -318,16 +331,19 @@
             // 
             // clbCharts
             // 
+            this.clbCharts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.clbCharts.FormattingEnabled = true;
-            this.clbCharts.Location = new System.Drawing.Point(639, 214);
+            this.clbCharts.Location = new System.Drawing.Point(646, 29);
             this.clbCharts.Name = "clbCharts";
-            this.clbCharts.Size = new System.Drawing.Size(105, 154);
+            this.clbCharts.Size = new System.Drawing.Size(110, 184);
             this.clbCharts.TabIndex = 15;
             // 
             // lblMesPeriodTo
             // 
+            this.lblMesPeriodTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMesPeriodTo.AutoSize = true;
-            this.lblMesPeriodTo.Location = new System.Drawing.Point(451, 382);
+            this.lblMesPeriodTo.Location = new System.Drawing.Point(506, 9);
             this.lblMesPeriodTo.Name = "lblMesPeriodTo";
             this.lblMesPeriodTo.Size = new System.Drawing.Size(19, 13);
             this.lblMesPeriodTo.TabIndex = 20;
@@ -336,8 +352,9 @@
             // 
             // lblMesPeriodFrom
             // 
+            this.lblMesPeriodFrom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMesPeriodFrom.AutoSize = true;
-            this.lblMesPeriodFrom.Location = new System.Drawing.Point(315, 382);
+            this.lblMesPeriodFrom.Location = new System.Drawing.Point(370, 9);
             this.lblMesPeriodFrom.Name = "lblMesPeriodFrom";
             this.lblMesPeriodFrom.Size = new System.Drawing.Size(13, 13);
             this.lblMesPeriodFrom.TabIndex = 21;
@@ -346,7 +363,8 @@
             // 
             // dtpMesPeriodTo
             // 
-            this.dtpMesPeriodTo.Location = new System.Drawing.Point(476, 376);
+            this.dtpMesPeriodTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.dtpMesPeriodTo.Location = new System.Drawing.Point(531, 3);
             this.dtpMesPeriodTo.Name = "dtpMesPeriodTo";
             this.dtpMesPeriodTo.Size = new System.Drawing.Size(111, 20);
             this.dtpMesPeriodTo.TabIndex = 18;
@@ -355,7 +373,8 @@
             // 
             // dtpMesPeriodFrom
             // 
-            this.dtpMesPeriodFrom.Location = new System.Drawing.Point(334, 376);
+            this.dtpMesPeriodFrom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.dtpMesPeriodFrom.Location = new System.Drawing.Point(389, 3);
             this.dtpMesPeriodFrom.Name = "dtpMesPeriodFrom";
             this.dtpMesPeriodFrom.Size = new System.Drawing.Size(111, 20);
             this.dtpMesPeriodFrom.TabIndex = 19;
@@ -364,8 +383,10 @@
             // 
             // label5
             // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(37, 382);
+            this.label5.Location = new System.Drawing.Point(10, 9);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(48, 13);
             this.label5.TabIndex = 17;
@@ -373,8 +394,10 @@
             // 
             // cbMeasurePeriods
             // 
+            this.cbMeasurePeriods.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.cbMeasurePeriods.FormattingEnabled = true;
-            this.cbMeasurePeriods.Location = new System.Drawing.Point(91, 375);
+            this.cbMeasurePeriods.Location = new System.Drawing.Point(64, 3);
             this.cbMeasurePeriods.Name = "cbMeasurePeriods";
             this.cbMeasurePeriods.Size = new System.Drawing.Size(121, 21);
             this.cbMeasurePeriods.TabIndex = 16;
@@ -397,31 +420,76 @@
             this.lblRainyDays.TabIndex = 23;
             this.lblRainyDays.Text = "0";
             // 
+            // scChartData
+            // 
+            this.scChartData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.scChartData.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.scChartData.Location = new System.Drawing.Point(0, 185);
+            this.scChartData.Name = "scChartData";
+            this.scChartData.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // scChartData.Panel1
+            // 
+            this.scChartData.Panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.scChartData.Panel1.Controls.Add(this.clbCharts);
+            this.scChartData.Panel1.Controls.Add(this.label2);
+            this.scChartData.Panel1.Controls.Add(this.cbChartPeriod);
+            this.scChartData.Panel1.Controls.Add(this.dtpChrPeriodFrom);
+            this.scChartData.Panel1.Controls.Add(this.dtpChrPeriodTo);
+            this.scChartData.Panel1.Controls.Add(this.lblChrPeriodFrom);
+            this.scChartData.Panel1.Controls.Add(this.lblChrPeriodTo);
+            // 
+            // scChartData.Panel2
+            // 
+            this.scChartData.Panel2.BackColor = System.Drawing.SystemColors.Control;
+            this.scChartData.Panel2.Controls.Add(this.lblRowsCount);
+            this.scChartData.Panel2.Controls.Add(this.lblTotalCount);
+            this.scChartData.Panel2.Controls.Add(this.label5);
+            this.scChartData.Panel2.Controls.Add(this.cbMeasurePeriods);
+            this.scChartData.Panel2.Controls.Add(this.dtpMesPeriodFrom);
+            this.scChartData.Panel2.Controls.Add(this.dtpMesPeriodTo);
+            this.scChartData.Panel2.Controls.Add(this.lblMesPeriodTo);
+            this.scChartData.Panel2.Controls.Add(this.lblMesPeriodFrom);
+            this.scChartData.Panel2.Controls.Add(this.dgvMain);
+            this.scChartData.Size = new System.Drawing.Size(756, 398);
+            this.scChartData.SplitterDistance = 199;
+            this.scChartData.SplitterWidth = 2;
+            this.scChartData.TabIndex = 24;
+            // 
+            // lblTotalCount
+            // 
+            this.lblTotalCount.AutoSize = true;
+            this.lblTotalCount.Location = new System.Drawing.Point(658, 9);
+            this.lblTotalCount.Name = "lblTotalCount";
+            this.lblTotalCount.Size = new System.Drawing.Size(64, 13);
+            this.lblTotalCount.TabIndex = 22;
+            this.lblTotalCount.Text = "Total count:";
+            this.lblTotalCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblRowsCount
+            // 
+            this.lblRowsCount.AutoSize = true;
+            this.lblRowsCount.Location = new System.Drawing.Point(719, 9);
+            this.lblRowsCount.Name = "lblRowsCount";
+            this.lblRowsCount.Size = new System.Drawing.Size(13, 13);
+            this.lblRowsCount.TabIndex = 23;
+            this.lblRowsCount.Text = "0";
+            this.lblRowsCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(756, 583);
+            this.Controls.Add(this.scChartData);
             this.Controls.Add(this.lblRainyDays);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.lblMesPeriodTo);
-            this.Controls.Add(this.lblMesPeriodFrom);
-            this.Controls.Add(this.dtpMesPeriodTo);
-            this.Controls.Add(this.dtpMesPeriodFrom);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.cbMeasurePeriods);
-            this.Controls.Add(this.clbCharts);
-            this.Controls.Add(this.lblChrPeriodTo);
-            this.Controls.Add(this.lblChrPeriodFrom);
-            this.Controls.Add(this.dtpChrPeriodTo);
-            this.Controls.Add(this.dtpChrPeriodFrom);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.cbChartPeriod);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnAddTest);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.gbLastMonthTemperature);
-            this.Controls.Add(this.dgvMain);
             this.Controls.Add(this.dtpDate);
             this.Controls.Add(this.label1);
             this.MainMenuStrip = this.menuStrip1;
@@ -436,6 +504,11 @@
             this.menuStrip1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvYearsDays)).EndInit();
+            this.scChartData.Panel1.ResumeLayout(false);
+            this.scChartData.Panel1.PerformLayout();
+            this.scChartData.Panel2.ResumeLayout(false);
+            this.scChartData.Panel2.PerformLayout();
+            this.scChartData.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -480,6 +553,9 @@
         private System.Windows.Forms.ComboBox cbMeasurePeriods;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblRainyDays;
+        private System.Windows.Forms.SplitContainer scChartData;
+        private System.Windows.Forms.Label lblRowsCount;
+        private System.Windows.Forms.Label lblTotalCount;
     }
 }
 

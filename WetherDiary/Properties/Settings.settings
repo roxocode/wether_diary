@@ -29,5 +29,8 @@
     <Setting Name="RowHeight" Type="System.Byte" Scope="User">
       <Value Profile="(Default)">36</Value>
     </Setting>
+    <Setting Name="SplitterDistance" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">199</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
