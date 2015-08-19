@@ -67,8 +67,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.lblRainyDays = new System.Windows.Forms.Label();
             this.scChartData = new System.Windows.Forms.SplitContainer();
-            this.lblTotalCount = new System.Windows.Forms.Label();
             this.lblRowsCount = new System.Windows.Forms.Label();
+            this.lblTotalCount = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
             this.rowMenu.SuspendLayout();
             this.gbLastMonthTemperature.SuspendLayout();
@@ -261,7 +261,7 @@
             this.dgvYearsDays.Location = new System.Drawing.Point(3, 16);
             this.dgvYearsDays.Name = "dgvYearsDays";
             this.dgvYearsDays.Size = new System.Drawing.Size(215, 136);
-            this.dgvYearsDays.TabIndex = 0;
+            this.dgvYearsDays.TabIndex = 10;
             // 
             // btnAddTest
             // 
@@ -270,7 +270,7 @@
             this.btnAddTest.Location = new System.Drawing.Point(489, 99);
             this.btnAddTest.Name = "btnAddTest";
             this.btnAddTest.Size = new System.Drawing.Size(92, 36);
-            this.btnAddTest.TabIndex = 9;
+            this.btnAddTest.TabIndex = 1;
             this.btnAddTest.Text = "Добавить";
             this.btnAddTest.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnAddTest.UseVisualStyleBackColor = true;
@@ -282,7 +282,7 @@
             this.cbChartPeriod.Location = new System.Drawing.Point(64, 3);
             this.cbChartPeriod.Name = "cbChartPeriod";
             this.cbChartPeriod.Size = new System.Drawing.Size(121, 21);
-            this.cbChartPeriod.TabIndex = 11;
+            this.cbChartPeriod.TabIndex = 2;
             // 
             // label2
             // 
@@ -337,7 +337,7 @@
             this.clbCharts.Location = new System.Drawing.Point(646, 29);
             this.clbCharts.Name = "clbCharts";
             this.clbCharts.Size = new System.Drawing.Size(110, 184);
-            this.clbCharts.TabIndex = 15;
+            this.clbCharts.TabIndex = 3;
             // 
             // lblMesPeriodTo
             // 
@@ -400,7 +400,7 @@
             this.cbMeasurePeriods.Location = new System.Drawing.Point(64, 3);
             this.cbMeasurePeriods.Name = "cbMeasurePeriods";
             this.cbMeasurePeriods.Size = new System.Drawing.Size(121, 21);
-            this.cbMeasurePeriods.TabIndex = 16;
+            this.cbMeasurePeriods.TabIndex = 4;
             // 
             // label3
             // 
@@ -458,16 +458,6 @@
             this.scChartData.SplitterWidth = 2;
             this.scChartData.TabIndex = 24;
             // 
-            // lblTotalCount
-            // 
-            this.lblTotalCount.AutoSize = true;
-            this.lblTotalCount.Location = new System.Drawing.Point(658, 9);
-            this.lblTotalCount.Name = "lblTotalCount";
-            this.lblTotalCount.Size = new System.Drawing.Size(64, 13);
-            this.lblTotalCount.TabIndex = 22;
-            this.lblTotalCount.Text = "Total count:";
-            this.lblTotalCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // lblRowsCount
             // 
             this.lblRowsCount.AutoSize = true;
@@ -477,6 +467,16 @@
             this.lblRowsCount.TabIndex = 23;
             this.lblRowsCount.Text = "0";
             this.lblRowsCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblTotalCount
+            // 
+            this.lblTotalCount.AutoSize = true;
+            this.lblTotalCount.Location = new System.Drawing.Point(658, 9);
+            this.lblTotalCount.Name = "lblTotalCount";
+            this.lblTotalCount.Size = new System.Drawing.Size(64, 13);
+            this.lblTotalCount.TabIndex = 22;
+            this.lblTotalCount.Text = "Total count:";
+            this.lblTotalCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // MainForm
             // 

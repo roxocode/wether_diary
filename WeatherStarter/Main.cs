@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
 using WeatherStarter.Properties;
+using Logger;
 using System.ComponentModel;
 
 /*
@@ -17,6 +18,7 @@ namespace WeatherStarter
     public partial class Main : Form
     {
         // TODO: Exclude to resource file
+        readonly string weatherFileName = "WetherDiary.exe";
         readonly string[] assemblies = new string[] { "WetherDiary.exe", "DBEngine.dll" };
         struct UpdateFile
         {
@@ -26,6 +28,7 @@ namespace WeatherStarter
         }
         string updateDescr = string.Empty;
         BackgroundWorker bWorker = new BackgroundWorker();
+        Logger.Logger log = new Logger.Logger("logs/start.log");
 
         public Main()
         {
@@ -35,7 +38,6 @@ namespace WeatherStarter
             bWorker.WorkerReportsProgress = true;
             bWorker.DoWork += bWorker_DoWork;
             bWorker.ProgressChanged += (s, e) => { tbLog.AppendLine(e.UserState.ToString()); };
-
             bWorker.RunWorkerAsync();
         }
 
@@ -53,9 +55,9 @@ namespace WeatherStarter
                         Path.Combine(Settings.Default.BackupDir, Settings.Default.VersionXmlFile));
                 }
             }
-            catch (WebException)
+            catch (WebException ex)
             {
-                // TODO: save log to file 'start.log'
+                log.AddToLog(ex.Message);
                 bWorker.ReportProgress(0, string.Format("Can't download file '{0}'", Settings.Default.VersionXmlFile));
                 RunWeatherDiaryAndExit();
                 return;
@@ -98,7 +100,6 @@ namespace WeatherStarter
                     Version downloadedVer = AssemblyName.GetAssemblyName(string.Format("{0}\\{1}", Settings.Default.BackupDir, uf.name)).Version;
                     if (!uf.ver.Equals(downloadedVer))
                     {
-                        // TODO: write down to log file or/and send by e-mail
                         bWorker.ReportProgress(0, string.Format("Version of '{0}' in {1} and downloaded file is not appropriates", uf.name, Settings.Default.VersionXmlFile));
                         break;
                     }
@@ -174,8 +175,13 @@ namespace WeatherStarter
 
         private void RunWeatherDiaryAndExit()
         {
+            string msg = string.Empty;
+            this.Invoke((MethodInvoker)(() => msg = tbLog.Text));
+            log.AddDateToLog();
+            log.AddToLog(msg, false);
+
             this.Invoke((MethodInvoker)(() => this.Hide()));
-            System.Diagnostics.ProcessStartInfo mainApp = new System.Diagnostics.ProcessStartInfo("WetherDiary.exe");
+            System.Diagnostics.ProcessStartInfo mainApp = new System.Diagnostics.ProcessStartInfo(this.weatherFileName);
             System.Diagnostics.Process.Start(mainApp);
             Application.Exit();
         }

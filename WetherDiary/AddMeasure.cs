@@ -97,6 +97,7 @@ namespace WetherDiary
                 //tbNote.Text = row["note"];
                 cbCloud.SelectedValue = (row["Cloud_ID"] == DBNull.Value ? 0 : row["Cloud_ID"]);
                 cbWind.SelectedValue = (row["Wind_ID"] == DBNull.Value ? 0 : row["Wind_ID"]);
+                cbWindForce.SelectedValue = (row["WindForce_ID"] == DBNull.Value ? 0 : row["WindForce_ID"]);
                 
                 // Fallout icons
                 SQLiteCommand selectFallouts = new SQLiteCommand(string.Format("SELECT fs.ID, fs.Measure_ID, fs.Fallout_ID, f.Name, f.IconPath FROM fallouts fs INNER JOIN fallout f ON fs.Fallout_ID = f.ID WHERE fs.Measure_ID = {0}", row["ID"]));
@@ -132,7 +133,7 @@ namespace WetherDiary
             }
 
             DataRow dr = dt.NewRow();
-            // TODO: Если замер новый, то Measure_ID будет известен только после его сохранения
+            // Если замер новый, то Measure_ID проставляется в отдельной функции SaveFallouts
             dr["Fallout_ID"] = cbFallouts.SelectedValue;
             dr["Name"] = cbFallouts.Text;
             string iconPath = ((DataRowView)cbFallouts.SelectedItem).Row["IconPath"].ToString();
