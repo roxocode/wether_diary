@@ -69,7 +69,7 @@ namespace WeatherStarter
             List<UpdateFile> updateFileList = GetUpdateVersions();
             tbUpdateVersions.Invoke((MethodInvoker)(() => tbUpdateVersions.Text = GetUpdateTextVersions(updateFileList)));
 
-            // Structure of update packege:
+            // Structure of update package:
             // version.xml (XML file with versions data, crc sums)
             // WeatherDiary.exe or/and DBEngine.dll
             foreach (UpdateFile uf in updateFileList)
@@ -179,6 +179,7 @@ namespace WeatherStarter
             this.Invoke((MethodInvoker)(() => msg = tbLog.Text));
             log.AddDateToLog();
             log.AddToLog(msg, false);
+            log.AddToLog(Environment.NewLine, false);
 
             this.Invoke((MethodInvoker)(() => this.Hide()));
             System.Diagnostics.ProcessStartInfo mainApp = new System.Diagnostics.ProcessStartInfo(this.weatherFileName);
